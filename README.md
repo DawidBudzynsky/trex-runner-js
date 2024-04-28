@@ -1,3 +1,5 @@
+<img src="./demo.png" alt="demo-screenshot" style="with:100%;height:auto">
+
 t-rex-runner refactored
 -------------------------------
 
