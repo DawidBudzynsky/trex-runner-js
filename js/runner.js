@@ -477,6 +477,14 @@ export default class Runner {
         this.gameOver()
       }
 
+      // Set distanceMeter position above Trex head before updating it
+      this.distanceMeter.x =
+        this.tRex.xPos +
+        this.tRex.config.WIDTH / 2 -
+        (this.distanceMeter.maxScoreUnits * DistanceMeter.dimensions.DEST_WIDTH) / 2
+
+      this.distanceMeter.y = this.tRex.yPos - this.tRex.config.HEIGHT - DistanceMeter.dimensions.HEIGHT / 2
+
       var playAchievementSound = this.distanceMeter.update(
         deltaTime,
         Math.ceil(this.distanceRan),
