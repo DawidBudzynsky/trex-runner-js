@@ -87,6 +87,9 @@ export default class Runner {
     this.images = {}
     this.imagesLoaded = 0
 
+    this.immortal = false
+    this.immortalTimer = 0
+
     if (this.isDisabled()) {
       this.setupDisabledRunner()
     } else {
@@ -462,6 +465,24 @@ export default class Runner {
           this.inverted,
         )
       }
+      let orbCollected = false
+
+      if (hasObstacles && this.horizon.obstacles.length > 0) {
+        for (let i = 0; i < this.horizon.obstacles.length; i++) {
+          const obs = this.horizon.obstacles[i]
+          if (checkForCollision(obs, this.tRex)) {
+            if (obs.typeConfig.type === 'IMMORTALITY_ORB') {
+              this.immortal = true
+              this.immortalTimer = 5000 // 5 seconds in ms
+              obs.remove = true
+              orbCollected = true
+            } else if (!this.immortal) {
+              collision = true
+              break
+            }
+          }
+        }
+      }
 
       // Check for collisions.
       var collision =
@@ -475,6 +496,14 @@ export default class Runner {
         }
       } else {
         this.gameOver()
+      }
+
+      if (this.immortal) {
+        this.immortalTimer -= deltaTime
+        if (this.immortalTimer <= 0) {
+          this.immortal = false
+          this.immortalTimer = 0
+          }
       }
 
       // Set distanceMeter position above Trex head before updating it
@@ -514,6 +543,13 @@ export default class Runner {
             this.invert()
           }
         }
+      }
+      if (this.immortal) {
+        this.canvasCtx.save()
+        this.canvasCtx.fillStyle = '#00cfff'
+        this.canvasCtx.font = 'bold 20px monospace'
+        this.canvasCtx.fillText('IMMORTALITY!', 10, 30)
+        this.canvasCtx.restore()
       }
     }
 

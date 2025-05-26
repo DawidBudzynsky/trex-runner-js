@@ -99,6 +99,20 @@ export default class Obstacle {
    * Draw and crop based on size.
    */
   draw() {
+    if (this.typeConfig.type === 'IMMORTALITY_ORB') {
+      this.canvasCtx.fillStyle = this.typeConfig.color || '#00cfff'
+      this.canvasCtx.beginPath()
+      this.canvasCtx.arc(
+        this.xPos + this.typeConfig.width / 2,
+        this.yPos + this.typeConfig.height / 2,
+        this.typeConfig.width / 2,
+        0,
+        2 * Math.PI,
+      )
+      this.canvasCtx.fill()
+      return
+    }
+
     var sourceWidth = this.typeConfig.width
     var sourceHeight = this.typeConfig.height
 
@@ -268,5 +282,18 @@ Obstacle.types = [
     numFrames: 2,
     frameRate: 1000 / 6,
     speedOffset: 0.8,
+  },
+  {
+    type: 'IMMORTALITY_ORB',
+    width: 20,
+    height: 20,
+    yPos: 80, // Adjust as needed
+    multipleSpeed: 999, // Only one at a time
+    minGap: 300,
+    minSpeed: 0,
+    collisionBoxes: [
+      new CollisionBox(0, 0, 20, 20),
+    ],
+    color: '#00cfff', // Custom property for drawing
   },
 ]
