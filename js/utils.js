@@ -237,3 +237,36 @@ export function decodeBase64ToArrayBuffer(base64String) {
 export function getTimeStamp() {
   return IS_IOS ? new Date().getTime() : performance.now()
 }
+
+
+/**
+ * Draw an image scaled and cropped to fit a destination rectangle, preserving aspect ratio.
+ * @param {CanvasRenderingContext2D} ctx
+ * @param {HTMLImageElement} img
+ * @param {number} dx Destination x
+ * @param {number} dy Destination y
+ * @param {number} dWidth Destination width
+ * @param {number} dHeight Destination height
+ */
+export function drawImageScaled(ctx, img, dx, dy, dWidth, dHeight) {
+  const imgAspect = img.width / img.height
+  const destAspect = dWidth / dHeight
+
+  let sx = 0, sy = 0, sw = img.width, sh = img.height
+
+  if (imgAspect > destAspect) {
+    // Image is wider than destination: crop sides
+    sw = img.height * destAspect
+    sx = (img.width - sw) / 2
+  } else {
+    // Image is taller than destination: crop top/bottom
+    sh = img.width / destAspect
+    sy = (img.height - sh) / 2
+  }
+
+  ctx.drawImage(
+    img,
+    sx, sy, sw, sh,   // source rect
+    dx, dy, dWidth, dHeight // destination rect
+  )
+}

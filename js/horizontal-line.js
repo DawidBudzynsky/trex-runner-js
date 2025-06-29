@@ -1,5 +1,6 @@
 import { assets } from './constants.js'
 import { IS_HIDPI, FPS } from './config.js'
+import { drawImageScaled } from './utils.js'
 
 export default class HorizonLine {
   /**
@@ -81,6 +82,25 @@ export default class HorizonLine {
       this.dimensions.WIDTH,
       this.dimensions.HEIGHT,
     )
+     // Draw grass.png on top of the horizon line
+    if (assets.grass && assets.grass.complete) {
+      // Set the desired grass height (e.g., 12px to match the horizon line)
+      const grassHeight = this.dimensions.HEIGHT + 60
+      const grassY = this.yPos - 30
+
+      drawImageScaled(
+        this.canvasCtx,
+        assets.grass,
+        this.xPos[0], grassY,
+        this.dimensions.WIDTH, grassHeight
+      )
+      drawImageScaled(
+        this.canvasCtx,
+        assets.grass,
+        this.xPos[1], grassY,
+        this.dimensions.WIDTH, grassHeight
+      )
+    }
   }
 
   /**

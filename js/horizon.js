@@ -1,9 +1,10 @@
 import Cloud from './cloud.js'
 import HorizonLine from './horizontal-line.js'
 import NightMode from './night-mode.js'
-import { getRandomNum } from './utils.js'
+import { drawImageScaled, getRandomNum } from './utils.js'
 import Obstacle from './obstacle.js'
-import { config } from './constants.js'
+import { config, assets } from './constants.js'
+import { DEFAULT_HEIGHT, DEFAULT_WIDTH } from './config.js'
 
 export default class Horizon {
   /**
@@ -38,8 +39,10 @@ export default class Horizon {
 
   /**
    * Initialise the horizon. Just add the line and a cloud. No obstacles.
+   * Also fill the background with a blue sky color.
    */
   init() {
+
     this.addCloud()
     this.horizonLine = new HorizonLine(this.canvas, this.spritePos.HORIZON)
     this.nightMode = new NightMode(
@@ -57,16 +60,42 @@ export default class Horizon {
    *     ease in section.
    * @param {boolean} showNightMode Night mode activated.
    */
-  update(deltaTime, currentSpeed, updateObstacles, showNightMode) {
-    this.runningTime += deltaTime
-    this.horizonLine.update(deltaTime, currentSpeed)
-    this.nightMode.update(showNightMode)
-    this.updateClouds(deltaTime, currentSpeed)
 
-    if (updateObstacles) {
-      this.updateObstacles(deltaTime, currentSpeed)
-    }
+update(deltaTime, currentSpeed, updateObstacles, showNightMode) {
+  const offSet = 2
+  const horizonY = this.dimensions.HEIGHT - this.config.HORIZON_HEIGHT - offSet
+
+  if (assets.background && assets.background.complete) {
+    drawImageScaled(
+      this.canvasCtx,
+      assets.background,
+      0, 0,
+      this.dimensions.WIDTH,
+      horizonY
+    )
   }
+    // Draw horizon.png under the grass, above the background
+  if (assets.horizon && assets.horizon.complete) {
+    // Place horizon.png at the bottom of the sky, stretching to canvas width
+    // and the height of the horizon line
+    drawImageScaled(
+      this.canvasCtx,
+      assets.horizon,
+      0, horizonY,
+      this.dimensions.WIDTH,
+      this.config.HORIZON_HEIGHT + offSet // +2 to match the -2 offset above
+    )
+  }
+
+  this.runningTime += deltaTime
+  this.horizonLine.update(deltaTime, currentSpeed)
+  this.nightMode.update(showNightMode)
+  this.updateClouds(deltaTime, currentSpeed)
+
+  if (updateObstacles) {
+    this.updateObstacles(deltaTime, currentSpeed)
+  }
+}
 
   /**
    * Update the cloud positions.
@@ -153,34 +182,35 @@ export default class Horizon {
     var obstacleTypeIndex = getRandomNum(0, Obstacle.types.length - 1)
     var obstacleType = Obstacle.types[obstacleTypeIndex]
 
+    // !!!!!!!!!!!!!!!!!!!!!! NOTE: not making duplicates rn!!!!!!!!!!!!!!!!!!!!
     // Check for multiples of the same type of obstacle.
     // Also check obstacle is available at current speed.
-    if (
-      this.duplicateObstacleCheck(obstacleType.type) ||
-      currentSpeed < obstacleType.minSpeed
-    ) {
-      this.addNewObstacle(currentSpeed)
-    } else {
-      var obstacleSpritePos = this.spritePos[obstacleType.type]
+    // if (
+    //   this.duplicateObstacleCheck(obstacleType.type) ||
+    //   currentSpeed < obstacleType.minSpeed
+    // ) {
+    //   this.addNewObstacle(currentSpeed)
+    // } else {
+    var obstacleSpritePos = this.spritePos[obstacleType.type]
 
-      this.obstacles.push(
-        new Obstacle(
-          this.canvasCtx,
-          obstacleType,
-          obstacleSpritePos,
-          this.dimensions,
-          this.gapCoefficient,
-          currentSpeed,
-          obstacleType.width,
-        ),
-      )
+    this.obstacles.push(
+      new Obstacle(
+        this.canvasCtx,
+        obstacleType,
+        obstacleSpritePos,
+        this.dimensions,
+        this.gapCoefficient,
+        currentSpeed,
+        obstacleType.width,
+      ),
+    )
 
-      this.obstacleHistory.unshift(obstacleType.type)
+    this.obstacleHistory.unshift(obstacleType.type)
 
-      if (this.obstacleHistory.length > 1) {
-        this.obstacleHistory.splice(config.MAX_OBSTACLE_DUPLICATION)
-      }
+    if (this.obstacleHistory.length > 1) {
+      this.obstacleHistory.splice(config.MAX_OBSTACLE_DUPLICATION)
     }
+    // }
   }
 
   /**
