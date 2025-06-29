@@ -3,6 +3,8 @@ import CollisionBox from './collision-box.js'
 import { getRandomNum } from './utils.js'
 import { IS_HIDPI, IS_MOBILE, FPS } from './config.js'
 
+const SCALE = 0.3
+
 /**
  * Obstacle.
  * @param {HTMLCanvasCtx} canvasCtx
@@ -27,7 +29,8 @@ export default class Obstacle {
     this.spritePos = spriteImgPos
     this.typeConfig = type
     this.gapCoefficient = gapCoefficient
-    this.size = getRandomNum(1, Obstacle.MAX_OBSTACLE_LENGTH)
+    // this.size = getRandomNum(1, Obstacle.MAX_OBSTACLE_LENGTH)
+    this.size = 1
     this.dimensions = dimensions
     this.remove = false
     this.xPos = dimensions.WIDTH + (opt_xOffset || 0)
@@ -99,20 +102,6 @@ export default class Obstacle {
    * Draw and crop based on size.
    */
   draw() {
-    if (this.typeConfig.type === 'IMMORTALITY_ORB') {
-      this.canvasCtx.fillStyle = this.typeConfig.color || '#00cfff'
-      this.canvasCtx.beginPath()
-      this.canvasCtx.arc(
-        this.xPos + this.typeConfig.width / 2,
-        this.yPos + this.typeConfig.height / 2,
-        this.typeConfig.width / 2,
-        0,
-        2 * Math.PI,
-      )
-      this.canvasCtx.fill()
-      return
-    }
-
     var sourceWidth = this.typeConfig.width
     var sourceHeight = this.typeConfig.height
 
@@ -131,15 +120,10 @@ export default class Obstacle {
     }
 
     this.canvasCtx.drawImage(
-      assets.imageSprite,
-      sourceX,
-      this.spritePos.y,
-      sourceWidth * this.size,
-      sourceHeight,
-      this.xPos,
-      this.yPos,
-      this.typeConfig.width * this.size,
-      this.typeConfig.height,
+      assets.additionalImageSprite,
+      sourceX, this.spritePos.y, sourceWidth * this.size, sourceHeight,
+      this.xPos, this.yPos, this.typeConfig.width * this.size * SCALE,
+      this.typeConfig.height * SCALE,
     )
   }
 
@@ -235,25 +219,25 @@ Obstacle.MAX_OBSTACLE_LENGTH = 3
  * minSpeed: Minimum speed which the obstacle can make an appearance.
  */
 Obstacle.types = [
-  {
-    type: 'CACTUS_SMALL',
-    width: 17,
-    height: 35,
-    yPos: 105,
-    multipleSpeed: 4,
-    minGap: 120,
-    minSpeed: 0,
-    collisionBoxes: [
-      new CollisionBox(0, 7, 5, 27),
-      new CollisionBox(4, 0, 6, 34),
-      new CollisionBox(10, 4, 7, 14),
-    ],
-  },
+  // {
+  //   type: 'CACTUS_SMALL',
+  //   width: 17,
+  //   height: 35,
+  //   yPos: 105,
+  //   multipleSpeed: 4,
+  //   minGap: 120,
+  //   minSpeed: 0,
+  //   collisionBoxes: [
+  //     new CollisionBox(0, 7, 5, 27),
+  //     new CollisionBox(4, 0, 6, 34),
+  //     new CollisionBox(10, 4, 7, 14),
+  //   ],
+  // },
   {
     type: 'CACTUS_LARGE',
-    width: 25,
-    height: 50,
-    yPos: 90,
+    width: 344,
+    height: 220,
+    yPos: 82,
     multipleSpeed: 7,
     minGap: 120,
     minSpeed: 0,
@@ -263,37 +247,24 @@ Obstacle.types = [
       new CollisionBox(13, 10, 10, 38),
     ],
   },
-  {
-    type: 'PTERODACTYL',
-    width: 46,
-    height: 40,
-    yPos: [100, 75, 50], // Variable height.
-    yPosMobile: [100, 50], // Variable height mobile.
-    multipleSpeed: 999,
-    minSpeed: 8.5,
-    minGap: 150,
-    collisionBoxes: [
-      new CollisionBox(15, 15, 16, 5),
-      new CollisionBox(18, 21, 24, 6),
-      new CollisionBox(2, 14, 4, 3),
-      new CollisionBox(6, 10, 4, 7),
-      new CollisionBox(10, 8, 6, 9),
-    ],
-    numFrames: 2,
-    frameRate: 1000 / 6,
-    speedOffset: 0.8,
-  },
-  {
-    type: 'IMMORTALITY_ORB',
-    width: 20,
-    height: 20,
-    yPos: 80, // Adjust as needed
-    multipleSpeed: 999, // Only one at a time
-    minGap: 300,
-    minSpeed: 0,
-    collisionBoxes: [
-      new CollisionBox(0, 0, 20, 20),
-    ],
-    color: '#00cfff', // Custom property for drawing
-  },
+  // {
+  //   type: 'PTERODACTYL',
+  //   width: 46,
+  //   height: 40,
+  //   yPos: [100, 75, 50], // Variable height.
+  //   yPosMobile: [100, 50], // Variable height mobile.
+  //   multipleSpeed: 999,
+  //   minSpeed: 8.5,
+  //   minGap: 150,
+  //   collisionBoxes: [
+  //     new CollisionBox(15, 15, 16, 5),
+  //     new CollisionBox(18, 21, 24, 6),
+  //     new CollisionBox(2, 14, 4, 3),
+  //     new CollisionBox(6, 10, 4, 7),
+  //     new CollisionBox(10, 8, 6, 9),
+  //   ],
+  //   numFrames: 2,
+  //   frameRate: 1000 / 6,
+  //   speedOffset: 0.8,
+  // },
 ]
