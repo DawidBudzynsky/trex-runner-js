@@ -1,4 +1,4 @@
-import { DEFAULT_WIDTH } from './config.js'
+import { DEFAULT_HEIGHT, DEFAULT_WIDTH } from './config.js'
 
 /**
  * image element
@@ -6,7 +6,14 @@ import { DEFAULT_WIDTH } from './config.js'
  */
 export const assets = {
   imageSprite: null,
+  additionalImageSprite: null,
+  background: new Image(),
+  horizon: new Image(),
+  grass: new Image(),
 }
+assets.background.src = 'assets/default_200_percent/background.png'
+assets.horizon.src = 'assets/default_200_percent/horizon.png'
+assets.grass.src = 'assets/default_200_percent/grass.png'
 
 /**
  * Default game configuration.
@@ -44,7 +51,7 @@ export const config = {
  */
 export const defaultDimensions = {
   WIDTH: DEFAULT_WIDTH,
-  HEIGHT: 150,
+  HEIGHT: DEFAULT_HEIGHT,
 }
 
 /**
@@ -81,7 +88,7 @@ export const spriteDefinition = {
     STAR: { x: 645, y: 2 },
   },
   HDPI: {
-    CACTUS_LARGE: { x: 652, y: 2 },
+    CACTUS_LARGE: { x: 0, y: 694 },
     CACTUS_SMALL: { x: 446, y: 2 },
     CLOUD: { x: 166, y: 2 },
     HORIZON: { x: 2, y: 104 },
@@ -89,7 +96,7 @@ export const spriteDefinition = {
     PTERODACTYL: { x: 260, y: 2 },
     RESTART: { x: 2, y: 2 },
     TEXT_SPRITE: { x: 1294, y: 2 },
-    TREX: { x: 1678, y: 2 },
+    TREX: { x: 502, y: 1133},
     STAR: { x: 1276, y: 2 },
   },
 }

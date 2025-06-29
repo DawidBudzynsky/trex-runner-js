@@ -173,17 +173,19 @@ export default class Runner {
   loadImages() {
     if (IS_HIDPI) {
       assets.imageSprite = document.getElementById('offline-resources-2x')
+      assets.additionalImageSprite = document.getElementById('texture')
       this.spriteDef = spriteDefinition.HDPI
     } else {
       assets.imageSprite = document.getElementById('offline-resources-1x')
       this.spriteDef = spriteDefinition.LDPI
     }
 
-    if (assets.imageSprite.complete) {
+    if (assets.imageSprite.complete && assets.additionalImageSprite.complete) {
       this.init()
     } else {
       // If the images are not yet loaded, add a listener.
       assets.imageSprite.addEventListener(events.LOAD, this.init.bind(this))
+      assets.additionalImageSprite.addEventListener(events.LOAD, this.init.bind(this))
     }
   }
 

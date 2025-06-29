@@ -1,0 +1,231 @@
+{
+  "frames": {
+    "trawa do duplikowania.png": {
+      "frame": {
+        "x": 0,
+        "y": 0,
+        "w": 6201,
+        "h": 347
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 110,
+        "y": 77,
+        "w": 6201,
+        "h": 347
+      },
+      "sourceSize": {
+        "w": 6500,
+        "h": 500
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "furia coin pozycja 1.png": {
+      "frame": {
+        "x": 6201,
+        "y": 0,
+        "w": 247,
+        "h": 239
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 277,
+        "y": 130,
+        "w": 247,
+        "h": 239
+      },
+      "sourceSize": {
+        "w": 800,
+        "h": 500
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "furia coin pozycja 3.png": {
+      "frame": {
+        "x": 6201,
+        "y": 239,
+        "w": 246,
+        "h": 239
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 277,
+        "y": 130,
+        "w": 246,
+        "h": 239
+      },
+      "sourceSize": {
+        "w": 800,
+        "h": 500
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "horyzont pod trawę.png": {
+      "frame": {
+        "x": 0,
+        "y": 347,
+        "w": 6052,
+        "h": 347
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 224,
+        "y": 76,
+        "w": 6052,
+        "h": 347
+      },
+      "sourceSize": {
+        "w": 6500,
+        "h": 500
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "furia coin pozycja 2.png": {
+      "frame": {
+        "x": 6052,
+        "y": 347,
+        "w": 75,
+        "h": 239
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 363,
+        "y": 130,
+        "w": 75,
+        "h": 239
+      },
+      "sourceSize": {
+        "w": 800,
+        "h": 500
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "rekin + fura.png": {
+      "frame": {
+        "x": 0,
+        "y": 694,
+        "w": 688,
+        "h": 439
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 56,
+        "y": 50,
+        "w": 688,
+        "h": 439
+      },
+      "sourceSize": {
+        "w": 800,
+        "h": 500
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "furia rekin pozycja 2.png": {
+      "frame": {
+        "x": 0,
+        "y": 1133,
+        "w": 502,
+        "h": 338
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 183,
+        "y": 81,
+        "w": 502,
+        "h": 338
+      },
+      "sourceSize": {
+        "w": 800,
+        "h": 500
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "furia rekin pozycja 1.png": {
+      "frame": {
+        "x": 502,
+        "y": 1133,
+        "w": 569,
+        "h": 319
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 116,
+        "y": 81,
+        "w": 569,
+        "h": 319
+      },
+      "sourceSize": {
+        "w": 800,
+        "h": 500
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "furia rekin pozycja 3.png": {
+      "frame": {
+        "x": 1071,
+        "y": 1133,
+        "w": 569,
+        "h": 300
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 116,
+        "y": 100,
+        "w": 569,
+        "h": 300
+      },
+      "sourceSize": {
+        "w": 800,
+        "h": 500
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    }
+  },
+  "meta": {
+    "app": "http://free-tex-packer.com",
+    "version": "0.6.7",
+    "image": "texture.png",
+    "format": "RGBA8888",
+    "size": {
+      "w": 6448,
+      "h": 1471
+    },
+    "scale": 1
+  }
+}

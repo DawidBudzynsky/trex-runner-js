@@ -3,6 +3,7 @@ import CollisionBox from './collision-box.js'
 import { IS_HIDPI, FPS } from './config.js'
 import { getTimeStamp } from './utils.js'
 
+export const SCALE = 0.20
 export default class Trex {
   /**
    * T-rex game character.
@@ -46,7 +47,7 @@ export default class Trex {
    */
   init() {
     this.groundYPos =
-      defaultDimensions.HEIGHT - this.config.HEIGHT - config.BOTTOM_PAD
+      defaultDimensions.HEIGHT - (this.config.HEIGHT * SCALE) - config.BOTTOM_PAD
     this.yPos = this.groundYPos
     this.minJumpHeight = this.groundYPos - this.config.MIN_JUMP_HEIGHT
 
@@ -156,17 +157,13 @@ export default class Trex {
       if (this.ducking && this.status == Trex.status.CRASHED) {
         this.xPos++
       }
+
       // Standing / running
       this.canvasCtx.drawImage(
-        assets.imageSprite,
-        sourceX,
-        sourceY,
-        sourceWidth,
-        sourceHeight,
-        this.xPos,
-        this.yPos,
-        this.config.WIDTH,
-        this.config.HEIGHT,
+        assets.additionalImageSprite,
+        sourceX, sourceY, sourceWidth, sourceHeight,
+        this.xPos, this.yPos, this.config.WIDTH * SCALE,
+        this.config.HEIGHT * SCALE,
       )
     }
   }
@@ -316,7 +313,7 @@ export default class Trex {
 Trex.config = {
   DROP_VELOCITY: -5,
   GRAVITY: 0.6,
-  HEIGHT: 47,
+  HEIGHT: 160,
   HEIGHT_DUCK: 25,
   INIITAL_JUMP_VELOCITY: -10,
   INTRO_DURATION: 1500,
@@ -325,7 +322,7 @@ Trex.config = {
   SPEED_DROP_COEFFICIENT: 3,
   SPRITE_WIDTH: 262,
   START_X_POS: 50,
-  WIDTH: 44,
+  WIDTH: 285,
   WIDTH_DUCK: 59,
 }
 
@@ -373,7 +370,7 @@ Trex.animFrames = {
     msPerFrame: 1000 / 3,
   },
   RUNNING: {
-    frames: [88, 132],
+    frames: [0, -285, 285],
     msPerFrame: 1000 / 12,
   },
   CRASHED: {
