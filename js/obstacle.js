@@ -1,15 +1,12 @@
-import { assets } from './constants.js'
+import { assets, spriteDefFolder } from './constants.js'
 import CollisionBox from './collision-box.js'
 import { getRandomNum } from './utils.js'
 import { IS_HIDPI, IS_MOBILE, FPS } from './config.js'
-
-const SCALE = 0.3
 
 /**
  * Obstacle.
  * @param {HTMLCanvasCtx} canvasCtx
  * @param {Obstacle.type} type
- * @param {Object} spritePos Obstacle position in sprite.
  * @param {Object} dimensions
  * @param {number} gapCoefficient Mutipler in determining the gap.
  * @param {number} speed
@@ -19,14 +16,12 @@ export default class Obstacle {
   constructor(
     canvasCtx,
     type,
-    spriteImgPos,
     dimensions,
     gapCoefficient,
     speed,
     opt_xOffset,
   ) {
     this.canvasCtx = canvasCtx
-    this.spritePos = spriteImgPos
     this.typeConfig = type
     this.gapCoefficient = gapCoefficient
     // this.size = getRandomNum(1, Obstacle.MAX_OBSTACLE_LENGTH)
@@ -43,6 +38,10 @@ export default class Obstacle {
     // For animated obstacles.
     this.currentFrame = 0
     this.timer = 0
+
+    if (this.typeConfig.assetKey) {
+      this.typeConfig.assets = assets[this.typeConfig.assetKey]
+    }
 
     this.init(speed)
   }
@@ -112,18 +111,19 @@ export default class Obstacle {
 
     // X position in sprite.
     var sourceX =
-      sourceWidth * this.size * (0.5 * (this.size - 1)) + this.spritePos.x
+      sourceWidth * this.size * (0.5 * (this.size - 1)) + this.typeConfig.spriteDef.x
 
     // Animation frames.
     if (this.currentFrame > 0) {
       sourceX += sourceWidth * this.currentFrame
     }
 
+    console.log('Drawing obstacle with asset:', this.typeConfig.assets)
+
     this.canvasCtx.drawImage(
-      assets.additionalImageSprite,
-      sourceX, this.spritePos.y, sourceWidth * this.size, sourceHeight,
-      this.xPos, this.yPos, this.typeConfig.width * this.size * SCALE,
-      this.typeConfig.height * SCALE,
+      this.typeConfig.assets,
+      sourceX, this.typeConfig.spriteDef.y, sourceWidth * this.size, sourceHeight,
+      this.xPos, this.yPos, this.typeConfig.width * this.size * this.typeConfig.scale, this.typeConfig.height * this.typeConfig.scale,
     )
   }
 
@@ -235,9 +235,12 @@ Obstacle.types = [
   // },
   {
     type: 'CACTUS_LARGE',
-    width: 344,
-    height: 220,
-    yPos: 82,
+    assetKey: 'carSprite',
+    spriteDef: spriteDefFolder.HDPI.CAR,
+    scale: 0.3,
+    width: 400,
+    height: 250,
+    yPos: 65,
     multipleSpeed: 7,
     minGap: 120,
     minSpeed: 0,
@@ -247,26 +250,29 @@ Obstacle.types = [
       new CollisionBox(13, 10, 10, 38),
     ],
   },
-  // {
-  //   type: 'PTERODACTYL',
-  //   width: 46,
-  //   height: 40,
-  //   yPos: [100, 75, 50], // Variable height.
-  //   yPosMobile: [100, 50], // Variable height mobile.
-  //   multipleSpeed: 999,
-  //   minSpeed: 8.5,
-  //   minGap: 150,
-  //   collisionBoxes: [
-  //     new CollisionBox(15, 15, 16, 5),
-  //     new CollisionBox(18, 21, 24, 6),
-  //     new CollisionBox(2, 14, 4, 3),
-  //     new CollisionBox(6, 10, 4, 7),
-  //     new CollisionBox(10, 8, 6, 9),
-  //   ],
-  //   numFrames: 2,
-  //   frameRate: 1000 / 6,
-  //   speedOffset: 0.8,
-  // },
+  {
+    type: 'PTERODACTYL',
+    width: 400,
+    assetKey: 'birdSprite',
+    spriteDef: spriteDefFolder.HDPI.BIRD,
+    scale: 0.2,
+    height: 250,
+    yPos: [100, 75, 50], // Variable height.
+    yPosMobile: [100, 50], // Variable height mobile.
+    multipleSpeed: 999,
+    minSpeed: 8.5,
+    minGap: 150,
+    collisionBoxes: [
+      new CollisionBox(15, 15, 16, 5),
+      new CollisionBox(18, 21, 24, 6),
+      new CollisionBox(2, 14, 4, 3),
+      new CollisionBox(6, 10, 4, 7),
+      new CollisionBox(10, 8, 6, 9),
+    ],
+    numFrames: 2,
+    frameRate: 1000 / 6,
+    speedOffset: 0.8,
+  },
   // {
   //   type: 'COIN',
   //   width: 20,

@@ -3,7 +3,7 @@ import HorizonLine from './horizontal-line.js'
 import NightMode from './night-mode.js'
 import { drawImageScaled, getRandomNum } from './utils.js'
 import Obstacle from './obstacle.js'
-import { config, assets } from './constants.js'
+import { config, assets, spriteDefFolder } from './constants.js'
 import { DEFAULT_HEIGHT, DEFAULT_WIDTH } from './config.js'
 import Coin from './coin.js'
 import { spriteDefinition } from './constants.js'
@@ -78,7 +78,7 @@ addCoin(currentSpeed) {
     tries++
   } while (overlap && tries < 10)
 
-  const coinSpritePos = this.spritePos.COIN
+  const coinSpritePos = spriteDefFolder.HDPI.COIN
 
   this.coins.push(
     new Coin(
@@ -233,13 +233,12 @@ addCoin(currentSpeed) {
     // ) {
     //   this.addNewObstacle(currentSpeed)
     // } else {
-    var obstacleSpritePos = this.spritePos[obstacleType.type]
+    // var obstacleSpritePos = this.spritePos[obstacleType.type]
 
     this.obstacles.push(
       new Obstacle(
         this.canvasCtx,
         obstacleType,
-        obstacleSpritePos,
         this.dimensions,
         this.gapCoefficient,
         currentSpeed,

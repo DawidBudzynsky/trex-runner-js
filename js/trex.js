@@ -160,7 +160,7 @@ export default class Trex {
 
       // Standing / running
       this.canvasCtx.drawImage(
-        assets.additionalImageSprite,
+        assets.sharkSprite,
         sourceX, sourceY, sourceWidth, sourceHeight,
         this.xPos, this.yPos, this.config.WIDTH * SCALE,
         this.config.HEIGHT * SCALE,
@@ -313,7 +313,7 @@ export default class Trex {
 Trex.config = {
   DROP_VELOCITY: -5,
   GRAVITY: 0.6,
-  HEIGHT: 160,
+  HEIGHT: 250,
   HEIGHT_DUCK: 25,
   INIITAL_JUMP_VELOCITY: -10,
   INTRO_DURATION: 1500,
@@ -322,7 +322,7 @@ Trex.config = {
   SPEED_DROP_COEFFICIENT: 3,
   SPRITE_WIDTH: 262,
   START_X_POS: 50,
-  WIDTH: 285,
+  WIDTH: 400,
   WIDTH_DUCK: 59,
 }
 
@@ -370,7 +370,7 @@ Trex.animFrames = {
     msPerFrame: 1000 / 3,
   },
   RUNNING: {
-    frames: [0, -285, 285],
+    frames: [0, 400, 800],
     msPerFrame: 1000 / 12,
   },
   CRASHED: {

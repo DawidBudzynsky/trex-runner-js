@@ -10,6 +10,11 @@ export const assets = {
   background: new Image(),
   horizon: new Image(),
   grass: new Image(),
+  sharkSprite: null,
+  birdSprite: null,
+  deadSharkSprite: null,
+  carSprite: null,
+  coinSprite: null,
 }
 assets.background.src = 'assets/default_200_percent/background.png'
 assets.horizon.src = 'assets/default_200_percent/horizon.png'
@@ -99,8 +104,18 @@ export const spriteDefinition = {
     TEXT_SPRITE: { x: 1294, y: 2 },
     TREX: { x: 502, y: 1133},
     STAR: { x: 1276, y: 2 },
-    COIN: { x: 0, y: 694},
+    COIN: { x: 6201, y: 0},
   },
+}
+
+export const spriteDefFolder = {
+  HDPI: {
+    SHARK: { x: 0, y: 0},
+    BIRD: { x: 0, y: 0},
+    DEAD_SHARK: { x: 0, y: 0},
+    CAR: { x: 0, y: 0},
+    COIN: { x: 0, y: 0},
+  }
 }
 
 /**

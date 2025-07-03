@@ -8,6 +8,7 @@ import {
   sounds,
   spriteDefinition,
   loadTimeData,
+  spriteDefFolder
 } from './constants.js'
 
 import { FPS, IS_HIDPI, IS_IOS, IS_MOBILE, DEFAULT_WIDTH } from './config.js'
@@ -171,13 +172,28 @@ export default class Runner {
     if (IS_HIDPI) {
       assets.imageSprite = document.getElementById('offline-resources-2x')
       assets.additionalImageSprite = document.getElementById('texture')
+
+      // sprites for each
+      assets.deadSharkSprite = document.getElementById('deadSharkSprite')
+      assets.birdSprite = document.getElementById('birdSprite')
+      assets.coinSprite = document.getElementById('coinSprite')
+      assets.sharkSprite = document.getElementById('sharkSprite')
+      assets.carSprite = document.getElementById('carSprite')
+
       this.spriteDef = spriteDefinition.HDPI
     } else {
       assets.imageSprite = document.getElementById('offline-resources-1x')
       this.spriteDef = spriteDefinition.LDPI
     }
 
-    if (assets.imageSprite.complete && assets.additionalImageSprite.complete) {
+    if (assets.imageSprite.complete &&
+        assets.additionalImageSprite.complete &&
+        assets.deadSharkSprite.complete &&
+        assets.birdSprite.complete &&
+        assets.coinSprite.complete &&
+        assets.sharkSprite.complete &&
+        assets.carSprite.complete
+      ) {
       this.init()
     } else {
       // If the images are not yet loaded, add a listener.
@@ -273,7 +289,7 @@ export default class Runner {
     )
 
     // Draw t-rex
-    this.tRex = new Trex(this.canvas, this.spriteDef.TREX)
+    this.tRex = new Trex(this.canvas, spriteDefFolder.HDPI.SHARK)
 
     this.outerContainerEl.appendChild(this.containerEl)
 

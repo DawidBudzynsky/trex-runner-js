@@ -3,8 +3,9 @@ import { FPS, IS_HIDPI } from './config.js'
 import { assets, spriteDefinition } from './constants.js'
 import { getRandomNum } from './utils.js'
 
-const WIDTH = 20
-const HEIGHT = 20
+const WIDTH = 400
+const HEIGHT = 250
+const SCALE = 0.2
 
 export default class Coin {
  constructor(canvasCtx, spritePos, dimensions, speed, yPos) {
@@ -27,7 +28,7 @@ export default class Coin {
 
     // Animation
     this.frameRate = 1000 / 6
-    this.numFrames = 1
+    this.numFrames = 3
     this.currentFrame = 0
     this.timer = 0
 
@@ -55,7 +56,9 @@ export default class Coin {
     if (this.numFrames) {
       this.timer += deltaTime
       if (this.timer >= this.frameRate) {
-        this.currentFrame = (this.currentFrame + 1) % this.numFrames
+        this.currentFrame = this.currentFrame == this.numFrames - 1
+            ? 0
+            : this.currentFrame + 1
         this.timer = 0
       }
     }
@@ -71,30 +74,21 @@ export default class Coin {
       sourceHeight *= 2
     }
 
-    let sourceX = this.spritePos.x + sourceWidth * this.currentFrame
+    let sourceX = this.spritePos.x
     let sourceY = this.spritePos.y
 
-    // this.canvasCtx.drawImage(
-    //     assets.imageSprite,
-    //     sourceX, sourceY, sourceWidth, sourceHeight,
-    //     this.xPos, this.yPos, this.width, this.height
-    // )
-    this.canvasCtx.drawImage(assets.imageSprite, 0, 0, sourceWidth, sourceHeight, this.xPos, this.yPos, this.width, this.height)
+    // Animation frames.
+    if (this.currentFrame > 0) {
+      sourceX += sourceWidth * this.currentFrame
+    }
 
-      // --- DEBUG: Draw collision box ---
-  this.canvasCtx.save()
-  this.canvasCtx.strokeStyle = 'red'
-  this.canvasCtx.lineWidth = 2
-  // Draw each collision box (in case you add more later)
-  this.collisionBoxes.forEach(box => {
-    this.canvasCtx.strokeRect(
-      this.xPos + box.x,
-      this.yPos + box.y,
-      box.width,
-      box.height
+    this.canvasCtx.drawImage(
+        assets.coinSprite,
+        sourceX, this.spritePos.y, sourceWidth, sourceHeight,
+        this.xPos, this.yPos, this.width * SCALE, this.height * SCALE
     )
-  })
 
+    this.canvasCtx.restore()
   }
 
 checkCollision(player) {
