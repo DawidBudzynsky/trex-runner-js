@@ -267,4 +267,20 @@ Obstacle.types = [
   //   frameRate: 1000 / 6,
   //   speedOffset: 0.8,
   // },
+  // {
+  //   type: 'COIN',
+  //   width: 20,
+  //   height: 20,
+  //   yPos: [100, 75, 50], // Variable height.
+  //   yPosMobile: [100, 50], // Variable height mobile.
+  //   multipleSpeed: 999,
+  //   minSpeed: 8.5,
+  //   minGap: 150,
+  //   collisionBoxes: [
+  //     new CollisionBox(15, 15, 15, 15),
+  //   ],
+  //   numFrames: 2,
+  //   frameRate: 1000 / 6,
+  //   speedOffset: 0.8,
+  // },
 ]

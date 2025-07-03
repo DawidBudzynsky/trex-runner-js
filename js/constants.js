@@ -86,6 +86,7 @@ export const spriteDefinition = {
     TEXT_SPRITE: { x: 655, y: 2 },
     TREX: { x: 848, y: 2 },
     STAR: { x: 645, y: 2 },
+    COIN: { x: 332, y: 2},
   },
   HDPI: {
     CACTUS_LARGE: { x: 0, y: 694 },
@@ -98,6 +99,7 @@ export const spriteDefinition = {
     TEXT_SPRITE: { x: 1294, y: 2 },
     TREX: { x: 502, y: 1133},
     STAR: { x: 1276, y: 2 },
+    COIN: { x: 0, y: 694},
   },
 }
 

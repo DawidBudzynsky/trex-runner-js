@@ -5,6 +5,8 @@ import { drawImageScaled, getRandomNum } from './utils.js'
 import Obstacle from './obstacle.js'
 import { config, assets } from './constants.js'
 import { DEFAULT_HEIGHT, DEFAULT_WIDTH } from './config.js'
+import Coin from './coin.js'
+import { spriteDefinition } from './constants.js'
 
 export default class Horizon {
   /**
@@ -25,6 +27,7 @@ export default class Horizon {
     this.obstacleHistory = []
     this.horizonOffsets = [0, 0]
     this.cloudFrequency = this.config.CLOUD_FREQUENCY
+    this.coinFrequency = this.config.COIN_FREQUENCY
     this.spritePos = spritePos
     this.nightMode = null
 
@@ -35,6 +38,10 @@ export default class Horizon {
     // Horizon
     this.horizonLine = null
     this.init()
+
+    // Coins
+    this.coins = []
+    this.coinCount = 0
   }
 
   /**
@@ -52,6 +59,38 @@ export default class Horizon {
     )
   }
 
+addCoin(currentSpeed) {
+  // Three possible heights (adjust as needed)
+  const heights = [
+    this.dimensions.HEIGHT - 40, // low
+    this.dimensions.HEIGHT - 75, // mid
+    this.dimensions.HEIGHT - 100 // high
+  ]
+
+  // Try to avoid overlap with obstacles
+  let yPos, tries = 0, overlap
+  do {
+    yPos = heights[Math.floor(Math.random() * heights.length)]
+    overlap = this.obstacles.some(ob =>
+      Math.abs(ob.xPos - this.dimensions.WIDTH) < ob.width &&
+      Math.abs(ob.yPos - yPos) < ob.height
+    )
+    tries++
+  } while (overlap && tries < 10)
+
+  const coinSpritePos = this.spritePos.COIN
+
+  this.coins.push(
+    new Coin(
+      this.canvasCtx,
+      coinSpritePos,
+      this.dimensions,
+      currentSpeed,
+      yPos
+    )
+  )
+}
+
   /**
    * @param {number} deltaTime
    * @param {number} currentSpeed
@@ -61,40 +100,43 @@ export default class Horizon {
    * @param {boolean} showNightMode Night mode activated.
    */
 
-update(deltaTime, currentSpeed, updateObstacles, showNightMode) {
-  const offSet = 2
-  const horizonY = this.dimensions.HEIGHT - this.config.HORIZON_HEIGHT - offSet
+  update(deltaTime, currentSpeed, updateObstacles, showNightMode) {
+    const offSet = 2
+    // Make the background taller so the sun appears lower
+    const backgroundHeight = this.dimensions.HEIGHT - this.config.HORIZON_HEIGHT 
+    const horizonY = this.dimensions.HEIGHT - this.config.HORIZON_HEIGHT - offSet
 
-  if (assets.background && assets.background.complete) {
-    drawImageScaled(
-      this.canvasCtx,
-      assets.background,
-      0, 0,
-      this.dimensions.WIDTH,
-      horizonY
-    )
-  }
-    // Draw horizon.png under the grass, above the background
-  if (assets.horizon && assets.horizon.complete) {
-    // Place horizon.png at the bottom of the sky, stretching to canvas width
-    // and the height of the horizon line
-    drawImageScaled(
-      this.canvasCtx,
-      assets.horizon,
-      0, horizonY,
-      this.dimensions.WIDTH,
-      this.config.HORIZON_HEIGHT + offSet // +2 to match the -2 offset above
-    )
-  }
+    // Draw the background first (bottom layer)
+    if (assets.background && assets.background.complete) {
+      drawImageScaled(
+        this.canvasCtx,
+        assets.background,
+        0, 0,
+        this.dimensions.WIDTH,
+        backgroundHeight
+      )
+    }
+    // Draw horizon.png on top of the background, just above the grass
+    if (assets.horizon && assets.horizon.complete) {
+      drawImageScaled(
+        this.canvasCtx,
+        assets.horizon,
+        0, horizonY,
+        this.dimensions.WIDTH,
+        this.config.HORIZON_HEIGHT + offSet
+      )
+    }
 
-  this.runningTime += deltaTime
-  this.horizonLine.update(deltaTime, currentSpeed)
-  this.nightMode.update(showNightMode)
-  this.updateClouds(deltaTime, currentSpeed)
+    this.runningTime += deltaTime
+    this.horizonLine.update(deltaTime, currentSpeed)
+    this.nightMode.update(showNightMode)
+    this.updateClouds(deltaTime, currentSpeed)
 
-  if (updateObstacles) {
-    this.updateObstacles(deltaTime, currentSpeed)
-  }
+    if (updateObstacles) {
+      this.updateObstacles(deltaTime, currentSpeed)
+    }
+
+    this.updateCoins(deltaTime, currentSpeed)
 }
 
   /**
@@ -256,6 +298,39 @@ update(deltaTime, currentSpeed, updateObstacles, showNightMode) {
       new Cloud(this.canvas, this.spritePos.CLOUD, this.dimensions.WIDTH),
     )
   }
+
+  updateCoins(deltaTime, speed) {
+    var updatedCoins = this.coins.slice(0)
+    var numCoins = this.coins.length
+
+    if (numCoins) {
+      for (var i = numCoins - 1; i >=0; i--) {
+        var coin = this.coins[i]
+        coin.update(deltaTime, speed)
+
+        if (coin.remove) {
+          updatedCoins.shift()
+        }
+      }
+
+      this.coins = updatedCoins
+      
+      var lastCoin = this.coins[numCoins - 1]
+
+      if (
+        numCoins < this.config.MAX_COINS &&
+        lastCoin &&
+        this.dimensions.WIDTH - lastCoin.xPos > lastCoin.coinGap &&
+        this.coinFrequency > Math.random()
+      ) {
+        this.addCoin()
+      }
+
+    this.coins = this.coins.filter(c => !c.remove && !c.collected)
+    } else {
+      this.addCoin()
+    }
+  }    
 }
 
 /**
@@ -266,6 +341,8 @@ Horizon.config = {
   BG_CLOUD_SPEED: 0.2,
   BUMPY_THRESHOLD: 0.3,
   CLOUD_FREQUENCY: 0.5,
+  COIN_FREQUENCY: 0.7,
   HORIZON_HEIGHT: 16,
   MAX_CLOUDS: 6,
+  MAX_COINS: 2,
 }

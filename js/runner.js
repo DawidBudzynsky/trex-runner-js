@@ -87,9 +87,6 @@ export default class Runner {
     this.images = {}
     this.imagesLoaded = 0
 
-    this.immortal = false
-    this.immortalTimer = 0
-
     if (this.isDisabled()) {
       this.setupDisabledRunner()
     } else {
@@ -473,15 +470,22 @@ export default class Runner {
         for (let i = 0; i < this.horizon.obstacles.length; i++) {
           const obs = this.horizon.obstacles[i]
           if (checkForCollision(obs, this.tRex)) {
-            if (obs.typeConfig.type === 'IMMORTALITY_ORB') {
-              this.immortal = true
-              this.immortalTimer = 5000 // 5 seconds in ms
-              obs.remove = true
-              orbCollected = true
-            } else if (!this.immortal) {
               collision = true
               break
-            }
+          }
+        }
+      }
+
+      // --- COIN COLLISION LOGIC ---
+      if (this.horizon.coins && this.horizon.coins.length > 0) {
+        for (let i = 0; i < this.horizon.coins.length; i++) {
+          const coin = this.horizon.coins[i]
+          console.log(checkForCollision(coin, this.tRex))
+          if (!coin.collected && checkForCollision(coin, this.tRex)) {
+            coin.collected = true
+            coin.remove = true
+            console.log("TRIGGERED")
+            this.horizon.coinCount = (this.horizon.coinCount || 0) + 1
           }
         }
       }
