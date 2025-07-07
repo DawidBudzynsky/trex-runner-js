@@ -270,3 +270,23 @@ export function drawImageScaled(ctx, img, dx, dy, dWidth, dHeight) {
     dx, dy, dWidth, dHeight // destination rect
   )
 }
+
+export function drawHitboxes(canvas, collisionBoxes, x, y) {
+  if (!DEBUG) return
+
+  canvas.save()
+  canvas.strokeStyle = DEBUG_COLOR
+  canvas.lineWidth = 2
+  for (let box of collisionBoxes) {
+    canvas.strokeRect(
+      x + box.x,
+      y + box.y,
+      box.width,
+      box.height
+    )
+  }
+  canvas.restore()
+}
+
+export const DEBUG = true
+export const DEBUG_COLOR = 'red'

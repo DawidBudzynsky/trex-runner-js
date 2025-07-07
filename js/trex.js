@@ -1,7 +1,7 @@
 import { assets, config, defaultDimensions } from './constants.js'
 import CollisionBox from './collision-box.js'
 import { IS_HIDPI, FPS } from './config.js'
-import { getTimeStamp } from './utils.js'
+import { drawHitboxes, getTimeStamp } from './utils.js'
 
 export const SCALE = 0.20
 export default class Trex {
@@ -37,6 +37,16 @@ export default class Trex {
     this.speedDrop = false
     this.jumpCount = 0
     this.jumpspotX = 0
+
+    this.collisionBoxes = {
+      DUCKING: [new CollisionBox(1, 18, 55, 25)],
+      RUNNING: [
+        new CollisionBox(42, 9, 5, 16),
+        new CollisionBox(25, 20, 40, 10),
+        new CollisionBox(30, 30, 30, 6),
+        new CollisionBox(17, 15, 6, 20),
+      ],
+    }
 
     this.init()
   }
@@ -178,20 +188,9 @@ export default class Trex {
         this.xPos, this.yPos, this.config.WIDTH * SCALE,
         this.config.HEIGHT * SCALE,
       )
-          // --- DEBUG: Draw collision boxes ---
-    this.canvasCtx.save()
-    this.canvasCtx.strokeStyle = 'red'
-    this.canvasCtx.lineWidth = 2
-    for (let box of this.getCollistionBoxes()) {
-      this.canvasCtx.strokeRect(
-        this.xPos + box.x,
-        this.yPos + box.y,
-        box.width,
-        box.height
-      )
     }
-    this.canvasCtx.restore()
-    }
+
+    drawHitboxes(this.canvasCtx, this.collisionBoxes.RUNNING, this.xPos, this.yPos)
   }
 
   /**
@@ -326,7 +325,7 @@ export default class Trex {
    * @returns boxes
    */
   getCollistionBoxes() {
-    const boxesDict = Trex.collisionBoxes
+    const boxesDict = this.collisionBoxes
     return this.ducking ? boxesDict.DUCKING : boxesDict.RUNNING
   }
   // end of Trex
@@ -356,15 +355,6 @@ Trex.config = {
  * Used in collision detection.
  * @type {Array<CollisionBox>}
  */
-Trex.collisionBoxes = {
-  DUCKING: [new CollisionBox(1, 18, 55, 25)],
-  RUNNING: [
-    new CollisionBox(42, 9, 5, 16),
-    new CollisionBox(25, 20, 40, 10),
-    new CollisionBox(30, 30, 30, 6),
-    new CollisionBox(17, 15, 6, 20),
-  ],
-}
 
 /**
  * Animation states.

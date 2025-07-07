@@ -1,6 +1,6 @@
 import { assets, spriteDefFolder } from './constants.js'
 import CollisionBox from './collision-box.js'
-import { getRandomNum } from './utils.js'
+import { drawHitboxes, getRandomNum } from './utils.js'
 import { IS_HIDPI, IS_MOBILE, FPS } from './config.js'
 
 /**
@@ -124,20 +124,9 @@ export default class Obstacle {
       this.xPos, this.yPos, this.typeConfig.width * this.size * this.typeConfig.scale, this.typeConfig.height * this.typeConfig.scale,
     )
 
-    // --- DEBUG: Draw collision boxes ---
-    this.canvasCtx.save()
-    this.canvasCtx.strokeStyle = 'red'
-    this.canvasCtx.lineWidth = 2
-    for (let box of this.collisionBoxes) {
-      this.canvasCtx.strokeRect(
-        this.xPos + box.x,
-        this.yPos + box.y,
-        box.width,
-        box.height
-      )
-    }
-    this.canvasCtx.restore()
+    drawHitboxes(this.canvasCtx, this.typeConfig.collisionBoxes, this.xPos, this.yPos)
   }
+
 
   /**
    * Obstacle frame update.

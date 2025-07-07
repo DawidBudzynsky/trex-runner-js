@@ -1,7 +1,7 @@
 import CollisionBox from './collision-box.js'
 import { FPS, IS_HIDPI, IS_MOBILE } from './config.js'
 import { assets, spriteDefinition } from './constants.js'
-import { getRandomNum } from './utils.js'
+import { drawHitboxes, getRandomNum } from './utils.js'
 
 const WIDTH = 400
 const HEIGHT = 250
@@ -105,21 +105,7 @@ export default class Coin {
         this.xPos, this.yPos, this.width * SCALE, this.height * SCALE
     )
 
-    // --- DEBUG: Draw collision boxes ---
-    this.canvasCtx.save()
-    this.canvasCtx.strokeStyle = 'red'
-    this.canvasCtx.lineWidth = 2
-    for (let box of this.collisionBoxes) {
-      this.canvasCtx.strokeRect(
-        this.xPos + box.x,
-        this.yPos + box.y,
-        box.width,
-        box.height
-      )
-    }
-    this.canvasCtx.restore()
-
-    this.canvasCtx.restore()
+    drawHitboxes(this.canvasCtx, this.collisionBoxes, this.xPos, this.yPos)
   }
 
 checkCollision(player) {
