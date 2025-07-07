@@ -82,6 +82,9 @@ export default class Runner {
 
     this.playCount = 0
 
+      this.secretBuffer = ''
+      this.secretCode = 'motherlode'
+
 
     // Sound FX.
     this.audioBuffer = null
@@ -649,6 +652,28 @@ export default class Runner {
    * @param {Event} e
    */
   onKeyDown(e) {
+    // Only allow secret code when game is playing and not crashed
+    if (
+      this.playing &&
+      !this.crashed &&
+      e.key &&
+      e.key.length === 1 &&
+      !e.ctrlKey &&
+      !e.metaKey &&
+      !e.altKey
+    ) {
+      this.secretBuffer += e.key.toLowerCase()
+      if (this.secretBuffer.length > this.secretCode.length) {
+        this.secretBuffer = this.secretBuffer.slice(-this.secretCode.length)
+      }
+      if (this.secretBuffer === this.secretCode) {
+        this.coinCount += 100
+        this.coinCounter.update(0, this.coinCount)
+        console.log('Secret unlocked! +100 coins')
+        this.secretBuffer = ''
+      }
+    }
+
     // Prevent native page scrolling whilst tapping on mobile.
     if (IS_MOBILE && this.playing) {
       e.preventDefault()
@@ -827,6 +852,7 @@ export default class Runner {
       this.playing = true
       this.crashed = false
       this.distanceRan = 0
+      this.coinCount = 0
       this.setSpeed(this.config.SPEED)
       this.time = getTimeStamp()
       this.containerEl.classList.remove(classes.CRASHED)
