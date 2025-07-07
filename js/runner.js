@@ -26,6 +26,7 @@ import DistanceMeter from './distance-meter.js'
 import Horizon from './horizon.js'
 import GameOverPanel from './game-panel.js'
 import Trex from './trex.js'
+import CoinCounter from './coin-counter.js'
 
 export default class Runner {
   /**
@@ -57,8 +58,12 @@ export default class Runner {
 
     this.distanceMeter = null
     this.distanceRan = 0
-
     this.highestScore = 0
+
+    this.coinCounter = null
+    this.coinCount = 0
+    this.coinsHighScore = 0
+
 
     this.time = 0
     this.runningTime = 0
@@ -76,6 +81,7 @@ export default class Runner {
     this.resizeTimerId_ = null
 
     this.playCount = 0
+
 
     // Sound FX.
     this.audioBuffer = null
@@ -288,6 +294,16 @@ export default class Runner {
       this.dimensions.WIDTH,
     )
 
+    // Coin counter
+    this.coinCounter = new CoinCounter(
+      this.canvas,
+      this.coinCount,
+      this.spriteDef.TEXT_SPRITE,
+      this.dimensions.WIDTH,
+      this.dimensions.HEIGHT,
+    )
+    console.log(this.coinCounter)
+
     // Draw t-rex
     this.tRex = new Trex(this.canvas, spriteDefFolder.HDPI.SHARK)
 
@@ -347,6 +363,8 @@ export default class Runner {
       updateCanvasScaling(this.canvas)
 
       this.distanceMeter.calcXPos(this.dimensions.WIDTH)
+      this.coinCounter.calcXPos(this.dimensions.WIDTH)
+
       this.clearCanvas()
       this.horizon.update(0, 0, true)
       this.tRex.update(0)
@@ -356,6 +374,7 @@ export default class Runner {
         this.containerEl.style.width = this.dimensions.WIDTH + 'px'
         this.containerEl.style.height = this.dimensions.HEIGHT + 'px'
         this.distanceMeter.update(0, Math.ceil(this.distanceRan))
+        this.coinCounter.update(0, this.coinCount)
         this.stop()
       } else {
         this.tRex.draw(0, 0)
@@ -496,12 +515,11 @@ export default class Runner {
       if (this.horizon.coins && this.horizon.coins.length > 0) {
         for (let i = 0; i < this.horizon.coins.length; i++) {
           const coin = this.horizon.coins[i]
-          console.log(checkForCollision(coin, this.tRex))
           if (!coin.collected && checkForCollision(coin, this.tRex)) {
             coin.collected = true
             coin.remove = true
-            console.log("TRIGGERED")
-            this.horizon.coinCount = (this.horizon.coinCount || 0) + 1
+            this.coinCount = (this.coinCount || 0) + 1
+            console.log(this.coinCount)
           }
         }
       }
@@ -528,18 +546,11 @@ export default class Runner {
           }
       }
 
-      // Set distanceMeter position above Trex head before updating it
-      this.distanceMeter.x =
-        this.tRex.xPos +
-        this.tRex.config.WIDTH / 2 -
-        (this.distanceMeter.maxScoreUnits * DistanceMeter.dimensions.DEST_WIDTH) / 2
-
-      this.distanceMeter.y = this.tRex.yPos - this.tRex.config.HEIGHT - DistanceMeter.dimensions.HEIGHT / 2
-
       var playAchievementSound = this.distanceMeter.update(
         deltaTime,
         Math.ceil(this.distanceRan),
       )
+      this.coinCounter.update(deltaTime, this.coinCount)
 
       if (playAchievementSound) {
         this.playSound(this.soundFx.SCORE)
@@ -565,13 +576,6 @@ export default class Runner {
             this.invert()
           }
         }
-      }
-      if (this.immortal) {
-        this.canvasCtx.save()
-        this.canvasCtx.fillStyle = '#00cfff'
-        this.canvasCtx.font = 'bold 20px monospace'
-        this.canvasCtx.fillText('IMMORTALITY!', 10, 30)
-        this.canvasCtx.restore()
       }
     }
 
@@ -788,6 +792,13 @@ export default class Runner {
       this.distanceMeter.setHighScore(this.highestScore)
     }
 
+    // Update the high score coins
+    if (this.coinCount > this.coinsHighScore) {
+      this.coinsHighScore = this.coinCount
+      this.coinCounter.setHighScore(this.coinsHighScore)
+    }
+
+
     // Reset the time clock.
     this.time = getTimeStamp()
   }
@@ -821,6 +832,7 @@ export default class Runner {
       this.containerEl.classList.remove(classes.CRASHED)
       this.clearCanvas()
       this.distanceMeter.reset(this.highestScore)
+      this.coinCounter.reset(this.coinsHighScore)
       this.horizon.reset()
       this.tRex.reset()
       this.playSound(this.soundFx.BUTTON_PRESS)

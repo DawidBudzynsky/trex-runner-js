@@ -152,6 +152,19 @@ export default class Trex {
         this.config.WIDTH_DUCK,
         this.config.HEIGHT,
       )
+
+    } else if (this.status == Trex.status.CRASHED) {
+       this.canvasCtx.drawImage(
+        assets.deadSharkSprite,
+        this.currentAnimFrames[this.currentFrame] + this.spritePos.x, // <-- frame offset
+        this.spritePos.y,
+        sourceWidth,
+        sourceHeight,
+        this.xPos,
+        this.yPos,
+        this.config.WIDTH * SCALE,
+        this.config.HEIGHT * SCALE,
+      )
     } else {
       // Crashed whilst ducking. Trex is standing up so needs adjustment.
       if (this.ducking && this.status == Trex.status.CRASHED) {
@@ -374,7 +387,7 @@ Trex.animFrames = {
     msPerFrame: 1000 / 12,
   },
   CRASHED: {
-    frames: [220],
+    frames: [0, 400, 800],
     msPerFrame: 1000 / 60,
   },
   JUMPING: {

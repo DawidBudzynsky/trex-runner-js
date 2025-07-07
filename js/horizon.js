@@ -41,7 +41,6 @@ export default class Horizon {
 
     // Coins
     this.coins = []
-    this.coinCount = 0
   }
 
   /**
@@ -60,33 +59,13 @@ export default class Horizon {
   }
 
 addCoin(currentSpeed) {
-  // Three possible heights (adjust as needed)
-  const heights = [
-    this.dimensions.HEIGHT - 40, // low
-    this.dimensions.HEIGHT - 75, // mid
-    this.dimensions.HEIGHT - 100 // high
-  ]
-
-  // Try to avoid overlap with obstacles
-  let yPos, tries = 0, overlap
-  do {
-    yPos = heights[Math.floor(Math.random() * heights.length)]
-    overlap = this.obstacles.some(ob =>
-      Math.abs(ob.xPos - this.dimensions.WIDTH) < ob.width &&
-      Math.abs(ob.yPos - yPos) < ob.height
-    )
-    tries++
-  } while (overlap && tries < 10)
-
   const coinSpritePos = spriteDefFolder.HDPI.COIN
-
   this.coins.push(
     new Coin(
       this.canvasCtx,
       coinSpritePos,
       this.dimensions,
-      currentSpeed,
-      yPos
+      currentSpeed
     )
   )
 }

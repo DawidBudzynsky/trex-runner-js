@@ -1,5 +1,5 @@
 import CollisionBox from './collision-box.js'
-import { FPS, IS_HIDPI } from './config.js'
+import { FPS, IS_HIDPI, IS_MOBILE } from './config.js'
 import { assets, spriteDefinition } from './constants.js'
 import { getRandomNum } from './utils.js'
 
@@ -8,12 +8,13 @@ const HEIGHT = 250
 const SCALE = 0.2
 
 export default class Coin {
- constructor(canvasCtx, spritePos, dimensions, speed, yPos) {
+ constructor(canvasCtx, spritePos, dimensions, speed) {
     this.canvasCtx = canvasCtx
     this.spritePos = spritePos
     this.dimensions = dimensions
     this.xPos = dimensions.WIDTH
-    this.yPos = yPos
+    this.yPos = [100, 75, 50]
+    this.yPosMobile = [100, 50]
     this.size = 1
     // NOTE: for collision checking
     this.typeConfig = {
@@ -40,6 +41,22 @@ export default class Coin {
       Coin.config.MIN_GAP,
       Coin.config.MAX_GAP,
     )
+
+    this.init()
+  }
+
+  init() {
+    // Check if obstacle can be positioned at various heights.
+    if (Array.isArray(this.yPos)) {
+      var yPosConfig = IS_MOBILE
+        ? this.yPosMobile
+        : this.yPos
+      this.yPos = yPosConfig[getRandomNum(0, yPosConfig.length - 1)]
+    } else {
+      this.yPos = this.yPos
+    }
+
+    this.draw()
   }
 
   getCollistionBoxes() {

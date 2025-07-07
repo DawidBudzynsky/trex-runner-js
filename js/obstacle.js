@@ -118,8 +118,6 @@ export default class Obstacle {
       sourceX += sourceWidth * this.currentFrame
     }
 
-    console.log('Drawing obstacle with asset:', this.typeConfig.assets)
-
     this.canvasCtx.drawImage(
       this.typeConfig.assets,
       sourceX, this.typeConfig.spriteDef.y, sourceWidth * this.size, sourceHeight,
