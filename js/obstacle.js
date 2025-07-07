@@ -123,6 +123,20 @@ export default class Obstacle {
       sourceX, this.typeConfig.spriteDef.y, sourceWidth * this.size, sourceHeight,
       this.xPos, this.yPos, this.typeConfig.width * this.size * this.typeConfig.scale, this.typeConfig.height * this.typeConfig.scale,
     )
+
+    // --- DEBUG: Draw collision boxes ---
+    this.canvasCtx.save()
+    this.canvasCtx.strokeStyle = 'red'
+    this.canvasCtx.lineWidth = 2
+    for (let box of this.collisionBoxes) {
+      this.canvasCtx.strokeRect(
+        this.xPos + box.x,
+        this.yPos + box.y,
+        box.width,
+        box.height
+      )
+    }
+    this.canvasCtx.restore()
   }
 
   /**
@@ -243,9 +257,9 @@ Obstacle.types = [
     minGap: 120,
     minSpeed: 0,
     collisionBoxes: [
-      new CollisionBox(0, 12, 7, 38),
-      new CollisionBox(8, 0, 7, 49),
-      new CollisionBox(13, 10, 10, 38),
+      new CollisionBox(25, 45, 55, 23),
+      new CollisionBox(25, 25, 50, 7),
+      new CollisionBox(45, 10, 10, 38),
     ],
   },
   {
@@ -255,36 +269,18 @@ Obstacle.types = [
     spriteDef: spriteDefFolder.HDPI.BIRD,
     scale: 0.2,
     height: 250,
-    yPos: [100, 75, 50], // Variable height.
-    yPosMobile: [100, 50], // Variable height mobile.
+    yPos: [100, 75, 50], 
+    yPosMobile: [100, 50], 
     multipleSpeed: 999,
     minSpeed: 8.5,
     minGap: 150,
     collisionBoxes: [
-      new CollisionBox(15, 15, 16, 5),
-      new CollisionBox(18, 21, 24, 6),
-      new CollisionBox(2, 14, 4, 3),
-      new CollisionBox(6, 10, 4, 7),
-      new CollisionBox(10, 8, 6, 9),
+      new CollisionBox(25, 15, 16, 5),
+      new CollisionBox(20, 21, 30, 6),
+      new CollisionBox(25, 27, 14, 3),
     ],
     numFrames: 2,
     frameRate: 1000 / 6,
     speedOffset: 0.8,
   },
-  // {
-  //   type: 'COIN',
-  //   width: 20,
-  //   height: 20,
-  //   yPos: [100, 75, 50], // Variable height.
-  //   yPosMobile: [100, 50], // Variable height mobile.
-  //   multipleSpeed: 999,
-  //   minSpeed: 8.5,
-  //   minGap: 150,
-  //   collisionBoxes: [
-  //     new CollisionBox(15, 15, 15, 15),
-  //   ],
-  //   numFrames: 2,
-  //   frameRate: 1000 / 6,
-  //   speedOffset: 0.8,
-  // },
 ]

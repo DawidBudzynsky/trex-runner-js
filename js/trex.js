@@ -178,6 +178,19 @@ export default class Trex {
         this.xPos, this.yPos, this.config.WIDTH * SCALE,
         this.config.HEIGHT * SCALE,
       )
+          // --- DEBUG: Draw collision boxes ---
+    this.canvasCtx.save()
+    this.canvasCtx.strokeStyle = 'red'
+    this.canvasCtx.lineWidth = 2
+    for (let box of this.getCollistionBoxes()) {
+      this.canvasCtx.strokeRect(
+        this.xPos + box.x,
+        this.yPos + box.y,
+        box.width,
+        box.height
+      )
+    }
+    this.canvasCtx.restore()
     }
   }
 
@@ -346,12 +359,10 @@ Trex.config = {
 Trex.collisionBoxes = {
   DUCKING: [new CollisionBox(1, 18, 55, 25)],
   RUNNING: [
-    new CollisionBox(22, 0, 17, 16),
-    new CollisionBox(1, 18, 30, 9),
-    new CollisionBox(10, 35, 14, 8),
-    new CollisionBox(1, 24, 29, 5),
-    new CollisionBox(5, 30, 21, 4),
-    new CollisionBox(9, 34, 15, 4),
+    new CollisionBox(42, 9, 5, 16),
+    new CollisionBox(25, 20, 40, 10),
+    new CollisionBox(30, 30, 30, 6),
+    new CollisionBox(17, 15, 6, 20),
   ],
 }
 

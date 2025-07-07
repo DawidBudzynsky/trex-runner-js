@@ -28,13 +28,13 @@ export default class Coin {
     this.collected = false
 
     // Animation
-    this.frameRate = 1000 / 6
+    this.frameRate = 1000 / 3
     this.numFrames = 3
     this.currentFrame = 0
     this.timer = 0
 
     this.collisionBoxes = [
-      new CollisionBox(0, 0, this.width, this.height)
+      new CollisionBox(23, 10, 30, 30)
     ]
 
     this.coinGap = getRandomNum(
@@ -104,6 +104,20 @@ export default class Coin {
         sourceX, this.spritePos.y, sourceWidth, sourceHeight,
         this.xPos, this.yPos, this.width * SCALE, this.height * SCALE
     )
+
+    // --- DEBUG: Draw collision boxes ---
+    this.canvasCtx.save()
+    this.canvasCtx.strokeStyle = 'red'
+    this.canvasCtx.lineWidth = 2
+    for (let box of this.collisionBoxes) {
+      this.canvasCtx.strokeRect(
+        this.xPos + box.x,
+        this.yPos + box.y,
+        box.width,
+        box.height
+      )
+    }
+    this.canvasCtx.restore()
 
     this.canvasCtx.restore()
   }
