@@ -83,9 +83,8 @@ export default class Runner {
 
     this.playCount = 0
 
-      this.secretBuffer = ''
-      this.secretCode = 'motherlode'
-
+    this.secretBuffer = ''
+    this.secretCode = 'motherlode'
 
     // Sound FX.
     this.audioBuffer = null
@@ -183,6 +182,11 @@ export default class Runner {
       assets.imageSprite = document.getElementById('offline-resources-2x')
       assets.additionalImageSprite = document.getElementById('texture')
 
+      assets.lakeImageSprite = document.getElementById('lake-texture')
+      assets.grass = document.getElementById('grass')
+      assets.background = document.getElementById('background')
+      assets.horizon = document.getElementById('horizon')
+
       // sprites for each
       assets.deadSharkSprite = document.getElementById('deadSharkSprite')
       assets.birdSprite = document.getElementById('birdSprite')
@@ -198,12 +202,14 @@ export default class Runner {
 
     if (assets.imageSprite.complete &&
         assets.additionalImageSprite.complete &&
+        assets.lakeImageSprite.complete &&
         assets.deadSharkSprite.complete &&
         assets.birdSprite.complete &&
         assets.coinSprite.complete &&
         assets.sharkSprite.complete &&
         assets.carSprite.complete
       ) {
+
       this.init()
     } else {
       // If the images are not yet loaded, add a listener.
@@ -428,14 +434,11 @@ export default class Runner {
 
     if (this.furiaworldBanner) {
       // Reset to initial state
-      this.furiaworldBanner.style.opacity = '0'
-      this.furiaworldBanner.style.width = '44px'
       this.furiaworldBanner.style.transform = 'translateY(-30px)' // Start slightly above
       this.furiaworldBanner.style.transition = 'all 2.5s ease'
 
       setTimeout(() => {
         this.furiaworldBanner.style.width = this.dimensions.WIDTH + 'px'
-        this.furiaworldBanner.style.opacity = '1'
         this.furiaworldBanner.style.transform = 'translateY(0)' // Slide down to normal position
       }, 100)
     }

@@ -83,28 +83,25 @@ addCoin(currentSpeed) {
     const offSet = 2
     // Make the background taller so the sun appears lower
     const backgroundHeight = this.dimensions.HEIGHT - this.config.HORIZON_HEIGHT 
-    const horizonY = this.dimensions.HEIGHT - this.config.HORIZON_HEIGHT - offSet
+    const horizonY = this.dimensions.HEIGHT - this.config.HORIZON_HEIGHT
 
     // Draw the background first (bottom layer)
-    if (assets.background && assets.background.complete) {
-      drawImageScaled(
-        this.canvasCtx,
-        assets.background,
-        0, 0,
-        this.dimensions.WIDTH,
-        backgroundHeight
-      )
-    }
+    drawImageScaled(
+      this.canvasCtx,
+      assets.background,
+      0, 0,
+      this.dimensions.WIDTH,
+      backgroundHeight
+    )
+
     // Draw horizon.png on top of the background, just above the grass
-    if (assets.horizon && assets.horizon.complete) {
-      drawImageScaled(
-        this.canvasCtx,
-        assets.horizon,
-        0, horizonY,
-        this.dimensions.WIDTH,
-        this.config.HORIZON_HEIGHT + offSet
-      )
-    }
+    drawImageScaled(
+      this.canvasCtx,
+      assets.horizon,
+      0, horizonY,
+      this.dimensions.WIDTH,
+      this.config.HORIZON_HEIGHT + offSet
+    )
 
     this.runningTime += deltaTime
     this.horizonLine.update(deltaTime, currentSpeed)
@@ -320,7 +317,7 @@ Horizon.config = {
   BUMPY_THRESHOLD: 0.3,
   CLOUD_FREQUENCY: 0.5,
   COIN_FREQUENCY: 0.7,
-  HORIZON_HEIGHT: 16,
+  HORIZON_HEIGHT: 50,
   MAX_CLOUDS: 6,
   MAX_COINS: 2,
 }

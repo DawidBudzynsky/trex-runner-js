@@ -7,18 +7,19 @@ import { DEFAULT_HEIGHT, DEFAULT_WIDTH } from './config.js'
 export const assets = {
   imageSprite: null,
   additionalImageSprite: null,
-  background: new Image(),
-  horizon: new Image(),
-  grass: new Image(),
+  lakeImageSprite: null,
+  background: null,
+  horizon: null,
+  grass: null,
   sharkSprite: null,
   birdSprite: null,
   deadSharkSprite: null,
   carSprite: null,
   coinSprite: null,
 }
-assets.background.src = 'assets/default_200_percent/background.png'
-assets.horizon.src = 'assets/default_200_percent/horizon.png'
-assets.grass.src = 'assets/default_200_percent/grass.png'
+// assets.background.src = 'assets/default_200_percent/background.png'
+// assets.horizon.src = 'assets/default_200_percent/horizon.png'
+// assets.grass.src = 'assets/default_200_percent/grass.png'
 
 /**
  * Default game configuration.

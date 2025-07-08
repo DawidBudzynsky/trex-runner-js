@@ -16,6 +16,8 @@ export default class HorizonLine {
     this.canvasCtx = canvas.getContext('2d')
     this.sourceDimensions = {}
     this.dimensions = HorizonLine.dimensions
+    this.shouldRenderLake = true
+    this.lakeXPos = -40
     this.sourceXPos = [
       this.spritePos.x,
       this.spritePos.x + this.dimensions.WIDTH,
@@ -59,48 +61,36 @@ export default class HorizonLine {
    * Draw the horizon line.
    */
   draw() {
-    this.canvasCtx.drawImage(
-      assets.imageSprite,
-      this.sourceXPos[0],
-      this.spritePos.y,
-      this.sourceDimensions.WIDTH,
-      this.sourceDimensions.HEIGHT,
-      this.xPos[0],
-      this.yPos,
-      this.dimensions.WIDTH,
-      this.dimensions.HEIGHT,
-    )
 
-    this.canvasCtx.drawImage(
-      assets.imageSprite,
-      this.sourceXPos[1],
-      this.spritePos.y,
-      this.sourceDimensions.WIDTH,
-      this.sourceDimensions.HEIGHT,
-      this.xPos[1],
-      this.yPos,
-      this.dimensions.WIDTH,
-      this.dimensions.HEIGHT,
-    )
-     // Draw grass.png on top of the horizon line
-    if (assets.grass && assets.grass.complete) {
-      // Set the desired grass height (e.g., 12px to match the horizon line)
-      const grassHeight = this.dimensions.HEIGHT + 60
-      const grassY = this.yPos - 30
-
-      drawImageScaled(
-        this.canvasCtx,
-        assets.grass,
-        this.xPos[0], grassY,
-        this.dimensions.WIDTH, grassHeight
-      )
-      drawImageScaled(
-        this.canvasCtx,
-        assets.grass,
-        this.xPos[1], grassY,
-        this.dimensions.WIDTH, grassHeight
+    // Only draw lake if it's still visible
+    if (this.shouldRenderLake && this.lakeXPos !== null) {
+      this.canvasCtx.drawImage(
+        assets.lakeImageSprite,
+        this.lakeXPos,
+        0,
+        4136 * 0.1,
+        1600 * 0.1
       )
     }
+
+    // Draw grass.png on top of the horizon line
+    // Set the desired grass height (e.g., 12px to match the horizon line)
+    const grassHeight = this.dimensions.HEIGHT + 60
+    const grassY = this.yPos - 30
+
+    drawImageScaled(
+      this.canvasCtx,
+      assets.grass,
+      this.xPos[0], grassY,
+      this.dimensions.WIDTH, grassHeight
+    )
+
+    drawImageScaled(
+      this.canvasCtx,
+      assets.grass,
+      this.xPos[1], grassY,
+      this.dimensions.WIDTH, grassHeight
+    )
   }
 
   /**
@@ -135,6 +125,16 @@ export default class HorizonLine {
     } else {
       this.updateXPos(1, increment)
     }
+
+    // Update lake position
+    this.lakeXPos -= increment
+
+    // Remove lake image if it's completely off screen
+    if (this.lakeXPos + (4136 * 0.1) < 0) {
+      this.shouldRenderLake = false
+      this.lakeXPos = null  // Flag to skip drawing
+    }
+
     this.draw()
   }
 
@@ -144,6 +144,8 @@ export default class HorizonLine {
   reset() {
     this.xPos[0] = 0
     this.xPos[1] = HorizonLine.dimensions.WIDTH
+    this.lakeXPos = -40
+    this.shouldRenderLake = true
   }
 }
 

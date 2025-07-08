@@ -94,35 +94,35 @@ export default class NightMode {
     this.canvasCtx.save()
     this.canvasCtx.globalAlpha = this.opacity
 
-    // Stars.
-    if (this.drawStars) {
-      for (var i = 0; i < NightMode.config.NUM_STARS; i++) {
-        this.canvasCtx.drawImage(
-          assets.imageSprite,
-          starSourceX,
-          this.stars[i].sourceY,
-          starSize,
-          starSize,
-          Math.round(this.stars[i].x),
-          this.stars[i].y,
-          NightMode.config.STAR_SIZE,
-          NightMode.config.STAR_SIZE,
-        )
-      }
-    }
+    // // Stars.
+    // if (this.drawStars) {
+    //   for (var i = 0; i < NightMode.config.NUM_STARS; i++) {
+    //     this.canvasCtx.drawImage(
+    //       assets.imageSprite,
+    //       starSourceX,
+    //       this.stars[i].sourceY,
+    //       starSize,
+    //       starSize,
+    //       Math.round(this.stars[i].x),
+    //       this.stars[i].y,
+    //       NightMode.config.STAR_SIZE,
+    //       NightMode.config.STAR_SIZE,
+    //     )
+    //   }
+    // }
 
-    // Moon.
-    this.canvasCtx.drawImage(
-      assets.imageSprite,
-      moonSourceX,
-      this.spritePos.y,
-      moonSourceWidth,
-      moonSourceHeight,
-      Math.round(this.xPos),
-      this.yPos,
-      moonOutputWidth,
-      NightMode.config.HEIGHT,
-    )
+    // // Moon.
+    // this.canvasCtx.drawImage(
+    //   assets.imageSprite,
+    //   moonSourceX,
+    //   this.spritePos.y,
+    //   moonSourceWidth,
+    //   moonSourceHeight,
+    //   Math.round(this.xPos),
+    //   this.yPos,
+    //   moonOutputWidth,
+    //   NightMode.config.HEIGHT,
+    // )
 
     this.canvasCtx.globalAlpha = 1
     this.canvasCtx.restore()
