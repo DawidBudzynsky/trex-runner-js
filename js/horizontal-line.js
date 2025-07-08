@@ -62,6 +62,13 @@ export default class HorizonLine {
    */
   draw() {
 
+    this.canvasCtx.drawImage(
+      assets.background,
+      0, 0,
+      600,
+      100,
+    )
+
     // Only draw lake if it's still visible
     if (this.shouldRenderLake && this.lakeXPos !== null) {
       this.canvasCtx.drawImage(

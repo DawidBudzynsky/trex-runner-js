@@ -85,14 +85,14 @@ addCoin(currentSpeed) {
     const backgroundHeight = this.dimensions.HEIGHT - this.config.HORIZON_HEIGHT 
     const horizonY = this.dimensions.HEIGHT - this.config.HORIZON_HEIGHT
 
-    // Draw the background first (bottom layer)
-    drawImageScaled(
-      this.canvasCtx,
-      assets.background,
-      0, 0,
-      this.dimensions.WIDTH,
-      backgroundHeight
-    )
+    // // Draw the background first (bottom layer)
+    // drawImageScaled(
+    //   this.canvasCtx,
+    //   assets.background,
+    //   0, 0,
+    //   this.dimensions.WIDTH,
+    //   backgroundHeight
+    // )
 
     // Draw horizon.png on top of the background, just above the grass
     drawImageScaled(
