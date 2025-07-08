@@ -426,10 +426,18 @@ export default class Runner {
       this.containerEl.style.webkitAnimation = 'intro .4s ease-out 1 both'
       this.containerEl.style.width = this.dimensions.WIDTH + 'px'
 
-          // --- Furiaworld banner animation ---
     if (this.furiaworldBanner) {
-      this.furiaworldBanner.style.webkitAnimation = 'intro .4s ease-out 1 both'
-      this.furiaworldBanner.style.width = this.dimensions.WIDTH + 'px'
+      // Reset to initial state
+      this.furiaworldBanner.style.opacity = '0'
+      this.furiaworldBanner.style.width = '44px'
+      this.furiaworldBanner.style.transform = 'translateY(-30px)' // Start slightly above
+      this.furiaworldBanner.style.transition = 'all 2.5s ease'
+
+      setTimeout(() => {
+        this.furiaworldBanner.style.width = this.dimensions.WIDTH + 'px'
+        this.furiaworldBanner.style.opacity = '1'
+        this.furiaworldBanner.style.transform = 'translateY(0)' // Slide down to normal position
+      }, 100)
     }
 
       this.playing = true
@@ -450,6 +458,7 @@ export default class Runner {
     this.containerEl.style.webkitAnimation = ''
     if (this.furiaworldBanner) {
       this.furiaworldBanner.style.webkitAnimation = ''
+      this.furiaworldBanner.style.opacity = '1'
     }
     this.playCount++
     // Handle tabbing off the page. Pause the current game.

@@ -163,3 +163,64 @@ html, body {
   transition: transform 250ms cubic-bezier(0.4, 0, 1, 1) 400ms;
   z-index: 2;
 }
+
+#furiaworld-banner {
+  display: flex;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  margin: auto;
+  justify-content: center;
+  align-items: center;
+  z-index: 3;
+  background: transparent;
+  box-sizing: border-box;
+  overflow: hidden;
+  width: 44px;
+  height: 60px;
+
+  /* Start hidden and moved up */
+  opacity: 0;
+  transform: translateY(-40px);
+  transition:
+    opacity 0.6s ease,
+    transform 0.6s ease,
+    width 0.6s ease;
+}
+
+/* Show the banner only when the game is activated (playing or intro) */
+body.arcade-mode #furiaworld-banner {
+  display: flex;
+  position: absolute;
+  top: -70px; /* Move banner higher above the game frame */
+  left: 0;
+  right: 0;
+  margin-left: auto;
+  margin-right: auto;
+  justify-content: center;
+  align-items: center;
+  z-index: 3; /* above the game */
+  background: transparent;
+  box-sizing: border-box;
+  overflow: hidden;
+  opacity: 0; /* Start hidden */
+  /* Animate both opacity and width over 2s */
+  transition:
+    opacity 2s cubic-bezier(0.4, 0, 1, 1),
+    transform 250ms cubic-bezier(0.4, 0, 1, 1) 400ms,
+    width 2s cubic-bezier(0.4, 0, 1, 1);
+  will-change: transform, width, opacity;
+  width: 44px; /* initial width, will be animated by JS */
+  height: 60px; /* or your preferred height */
+}
+
+#furiaworld-img {
+  width: auto;
+  max-width: 90%;
+  height: auto;
+  max-height: 60px;
+  display: block;
+  object-fit: contain;
+  margin: 0 auto;
+}
