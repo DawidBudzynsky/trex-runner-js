@@ -31,7 +31,7 @@ export default class Trex {
     this.status = Trex.status.WAITING
 
     this.jumping = false
-    this.ducking = false
+    // this.ducking = false
     this.jumpVelocity = 0
     this.reachedMinHeight = false
     this.speedDrop = false
@@ -39,7 +39,7 @@ export default class Trex {
     this.jumpspotX = 0
 
     this.collisionBoxes = {
-      DUCKING: [new CollisionBox(1, 18, 55, 25)],
+      // DUCKING: [new CollisionBox(1, 18, 55, 25)],
       RUNNING: [
         new CollisionBox(42, 9, 5, 16),
         new CollisionBox(25, 20, 40, 10),
@@ -120,7 +120,7 @@ export default class Trex {
     // Speed drop becomes duck if the down key is still being pressed.
     if (this.speedDrop && this.yPos == this.groundYPos) {
       this.speedDrop = false
-      this.setDuck(true)
+      // this.setDuck(true)
     }
   }
 
@@ -149,21 +149,22 @@ export default class Trex {
     sourceX += this.spritePos.x
     sourceY += this.spritePos.y
 
-    // Ducking.
-    if (this.ducking && this.status != Trex.status.CRASHED) {
-      this.canvasCtx.drawImage(
-        assets.imageSprite,
-        sourceX,
-        sourceY,
-        sourceWidth,
-        sourceHeight,
-        this.xPos,
-        this.yPos,
-        this.config.WIDTH_DUCK,
-        this.config.HEIGHT,
-      )
+    // // Ducking.
+    // if (this.ducking && this.status != Trex.status.CRASHED) {
+    //   this.canvasCtx.drawImage(
+    //     assets.imageSprite,
+    //     sourceX,
+    //     sourceY,
+    //     sourceWidth,
+    //     sourceHeight,
+    //     this.xPos,
+    //     this.yPos,
+    //     this.config.WIDTH_DUCK,
+    //     this.config.HEIGHT,
+    //   )
+    // }
 
-    } else if (this.status == Trex.status.CRASHED) {
+    if (this.status == Trex.status.CRASHED) {
        this.canvasCtx.drawImage(
         assets.deadSharkSprite,
         this.currentAnimFrames[this.currentFrame] + this.spritePos.x, // <-- frame offset
@@ -293,18 +294,18 @@ export default class Trex {
     this.jumpVelocity = 1
   }
 
-  /**
-   * @param {boolean} isDucking.
-   */
-  setDuck(isDucking) {
-    if (isDucking && this.status != Trex.status.DUCKING) {
-      this.update(0, Trex.status.DUCKING)
-      this.ducking = true
-    } else if (this.status == Trex.status.DUCKING) {
-      this.update(0, Trex.status.RUNNING)
-      this.ducking = false
-    }
-  }
+  // /**
+  //  * @param {boolean} isDucking.
+  //  */
+  // setDuck(isDucking) {
+  //   if (isDucking && this.status != Trex.status.DUCKING) {
+  //     this.update(0, Trex.status.DUCKING)
+  //     this.ducking = true
+  //   } else if (this.status == Trex.status.DUCKING) {
+  //     this.update(0, Trex.status.RUNNING)
+  //     this.ducking = false
+  //   }
+  // }
 
   /**
    * Reset the t-rex to running at start of game.
@@ -313,7 +314,7 @@ export default class Trex {
     this.yPos = this.groundYPos
     this.jumpVelocity = 0
     this.jumping = false
-    this.ducking = false
+    // this.ducking = false
     this.update(0, Trex.status.RUNNING)
     this.midair = false
     this.speedDrop = false
@@ -325,8 +326,9 @@ export default class Trex {
    * @returns boxes
    */
   getCollistionBoxes() {
-    const boxesDict = this.collisionBoxes
-    return this.ducking ? boxesDict.DUCKING : boxesDict.RUNNING
+    // const boxesDict = this.collisionBoxes
+    // return this.ducking ? boxesDict.DUCKING : boxesDict.RUNNING
+    return this.collisionBoxes.RUNNING
   }
   // end of Trex
 }
@@ -362,7 +364,7 @@ Trex.config = {
  */
 Trex.status = {
   CRASHED: 'CRASHED',
-  DUCKING: 'DUCKING',
+  // DUCKING: 'DUCKING',
   JUMPING: 'JUMPING',
   RUNNING: 'RUNNING',
   WAITING: 'WAITING',
@@ -395,8 +397,8 @@ Trex.animFrames = {
     frames: [0],
     msPerFrame: 1000 / 60,
   },
-  DUCKING: {
-    frames: [264, 323],
-    msPerFrame: 1000 / 8,
-  },
+  // DUCKING: {
+  //   frames: [264, 323],
+  //   msPerFrame: 1000 / 8,
+  // },
 }

@@ -43,6 +43,7 @@ export default class Runner {
     Runner._instance = this
 
     this.outerContainerEl = document.querySelector(outerContainerId)
+    this.furiaworldBanner = document.getElementById('furiaworld-banner')
     this.containerEl = null
     this.snackbarEl = null
     this.detailsButton = this.outerContainerEl.querySelector('#details-button')
@@ -425,9 +426,12 @@ export default class Runner {
       this.containerEl.style.webkitAnimation = 'intro .4s ease-out 1 both'
       this.containerEl.style.width = this.dimensions.WIDTH + 'px'
 
-      // if (this.touchController) {
-      //     this.outerContainerEl.appendChild(this.touchController);
-      // }
+          // --- Furiaworld banner animation ---
+    if (this.furiaworldBanner) {
+      this.furiaworldBanner.style.webkitAnimation = 'intro .4s ease-out 1 both'
+      this.furiaworldBanner.style.width = this.dimensions.WIDTH + 'px'
+    }
+
       this.playing = true
       this.activated = true
     } else if (this.crashed) {
@@ -444,6 +448,9 @@ export default class Runner {
     this.playingIntro = false
     this.tRex.playingIntro = false
     this.containerEl.style.webkitAnimation = ''
+    if (this.furiaworldBanner) {
+      this.furiaworldBanner.style.webkitAnimation = ''
+    }
     this.playCount++
     // Handle tabbing off the page. Pause the current game.
     document.addEventListener(
@@ -692,7 +699,7 @@ export default class Runner {
           // }
         }
         //  Play sound effect and jump on starting the game for the first time.
-        if (!this.tRex.jumping && !this.tRex.ducking) {
+        if (!this.tRex.jumping) {
           this.playSound(this.soundFx.BUTTON_PRESS)
           this.tRex.startJump(this.currentSpeed)
         }
@@ -707,16 +714,16 @@ export default class Runner {
       }
     }
 
-    if (this.playing && !this.crashed && keycodes.DUCK[e.keyCode]) {
-      e.preventDefault()
-      if (this.tRex.jumping) {
-        // Speed drop, activated only when jump key is not pressed.
-        this.tRex.setSpeedDrop()
-      } else if (!this.tRex.jumping && !this.tRex.ducking) {
-        // Duck.
-        this.tRex.setDuck(true)
-      }
-    }
+    // if (this.playing && !this.crashed && keycodes.DUCK[e.keyCode]) {
+    //   e.preventDefault()
+    //   if (this.tRex.jumping) {
+    //     // Speed drop, activated only when jump key is not pressed.
+    //     this.tRex.setSpeedDrop()
+    //   } else if (!this.tRex.jumping && !this.tRex.ducking) {
+    //     // Duck.
+    //     this.tRex.setDuck(true)
+    //   }
+    // }
   }
 
   /**
@@ -732,9 +739,6 @@ export default class Runner {
 
     if (this.isRunning() && isjumpKey) {
       this.tRex.endJump()
-    } else if (keycodes.DUCK[keyCode]) {
-      this.tRex.speedDrop = false
-      this.tRex.setDuck(false)
     } else if (this.crashed) {
       // Check that enough time has elapsed before allowing jump key to restart.
       var deltaTime = getTimeStamp() - this.time
@@ -900,6 +904,12 @@ export default class Runner {
     const cssScale = scale
     this.containerEl.style.transform =
       'scale(' + cssScale + ') translateY(' + translateY + 'px)'
+
+    // --- Furiaworld banner scaling ---
+    if (this.furiaworldBanner) {
+      this.furiaworldBanner.style.transform =
+        'scale(' + cssScale + ') translateY(' + translateY + 'px)'
+    }
   }
 
   /**
