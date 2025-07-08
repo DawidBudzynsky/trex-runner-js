@@ -288,5 +288,5 @@ export function drawHitboxes(canvas, collisionBoxes, x, y) {
   canvas.restore()
 }
 
-export const DEBUG = true
+export const DEBUG = false
 export const DEBUG_COLOR = 'red'
