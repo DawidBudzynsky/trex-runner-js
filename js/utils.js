@@ -289,4 +289,4 @@ export function drawHitboxes(canvas, collisionBoxes, x, y) {
 }
 
 export const DEBUG = false
-export const DEBUG_COLOR = 'red'
+export const DEBUG_COLOR = 'blue'
