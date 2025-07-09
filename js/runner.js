@@ -1008,15 +1008,22 @@ export default class Runner {
   startCalmDownSequence() {
     this.won = true
     this.stopSpawningObstacles = true
+    this.horizon.horizonLine.shouldRenderLakeP = true
 
     // Force T-Rex to land if jumping
     if (this.tRex.status === Trex.status.JUMPING) {
       this.tRex.endJump()
     }
 
-    setTimeout(() => {
-      this.freezeHorizon()
-    }, 1200) 
+    // Continuously check if lakeP is fully shown
+    const waitForLakeToReveal = () => {
+      if (!this.horizon.horizonLine.lakePFullyVisible) {
+        requestAnimationFrame(waitForLakeToReveal)
+      } else {
+        this.freezeHorizon() // Now we can freeze movement
+      }
+    }
+    waitForLakeToReveal()
   }
 
   freezeHorizon() {
