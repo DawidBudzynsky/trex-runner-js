@@ -1,4 +1,4 @@
-import { assets } from './constants.js'
+import { assets, config } from './constants.js'
 import { IS_HIDPI } from './config.js'
 import { getRandomNum } from './utils.js'
 
@@ -71,7 +71,11 @@ export default class Cloud {
    */
   update(speed) {
     if (!this.remove) {
-      this.xPos -= Math.ceil(speed)
+
+      if (!config.freezeMovement) {
+        this.xPos -= Math.ceil(speed)
+      }
+
       this.draw()
 
       // Mark as removeable if no longer in the canvas.

@@ -104,8 +104,11 @@ addCoin(currentSpeed) {
     )
 
     this.runningTime += deltaTime
+
     this.horizonLine.update(deltaTime, currentSpeed)
+
     this.nightMode.update(showNightMode)
+
     this.updateClouds(deltaTime, currentSpeed)
 
     if (updateObstacles) {
@@ -306,6 +309,10 @@ addCoin(currentSpeed) {
       this.addCoin()
     }
   }    
+
+  showLakeP() {
+    this.horizonLine.startLakePReveal()
+  }
 }
 
 /**

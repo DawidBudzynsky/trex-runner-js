@@ -76,6 +76,10 @@ export default class Runner {
     this.activated = false // Whether the easter egg has been activated.
     this.playing = false // Whether the game is currently in play state.
     this.crashed = false
+
+    this.won = false
+    this.stopSpawningObstacles = false
+
     this.paused = false
     this.inverted = false
     this.invertTimer = 0
@@ -183,6 +187,7 @@ export default class Runner {
       assets.additionalImageSprite = document.getElementById('texture')
 
       assets.lakeImageSprite = document.getElementById('lake-texture')
+      assets.lakeP = document.getElementById('lake-p-texture')
       assets.grass = document.getElementById('grass')
       assets.background = document.getElementById('background')
       assets.horizon = document.getElementById('horizon')
@@ -203,10 +208,14 @@ export default class Runner {
     if (assets.imageSprite.complete &&
         assets.additionalImageSprite.complete &&
         assets.lakeImageSprite.complete &&
+        assets.lakeP.complete &&
         assets.deadSharkSprite.complete &&
         assets.birdSprite.complete &&
         assets.coinSprite.complete &&
         assets.sharkSprite.complete &&
+        assets.background.complete &&
+        assets.grass.complete &&
+        assets.horizon.complete &&
         assets.carSprite.complete
       ) {
 
@@ -316,6 +325,19 @@ export default class Runner {
 
     // Draw t-rex
     this.tRex = new Trex(this.canvas, spriteDefFolder.HDPI.SHARK)
+    // this.tRex.introJumpAnimation(
+    //   () => {
+    //     // Per frame: clear + redraw entire frame
+    //     this.canvasCtx.clearRect(0, 0, this.canvas.width, this.canvas.height)
+    //     this.horizon.update(0, 0, true)  // <-- redraw background
+    //     // this.horizon.draw()
+    //     this.tRex.draw(0, 0)
+    //   },
+    //   () => {
+    //     // Optional: start game loop or show UI
+    //     console.log("Intro jump complete")
+    //   }
+    // )
 
     this.outerContainerEl.appendChild(this.containerEl)
 
@@ -426,7 +448,9 @@ export default class Runner {
 
       this.containerEl.addEventListener(
         events.ANIM_END,
-        this.startGame.bind(this),
+        this.tRex.startBackflipAnimation(() => {
+          this.startGame().bind(this)
+        })
       )
 
       this.containerEl.style.webkitAnimation = 'intro .4s ease-out 1 both'
@@ -504,6 +528,10 @@ export default class Runner {
       this.runningTime += deltaTime
       var hasObstacles = this.runningTime > this.config.CLEAR_TIME
 
+      if (this.stopSpawningObstacles) {
+        hasObstacles = false
+      }
+
       // First jump triggers the intro.
       if (this.tRex.jumpCount == 1 && !this.playingIntro) {
         this.playIntro()
@@ -521,7 +549,11 @@ export default class Runner {
           this.inverted,
         )
       }
-      let orbCollected = false
+
+      if (this.coinCount >= 2 && !this.won) {
+        console.log("you won!")
+        this.startCalmDownSequence()
+      }
 
       if (hasObstacles && this.horizon.obstacles.length > 0) {
         for (let i = 0; i < this.horizon.obstacles.length; i++) {
@@ -545,6 +577,7 @@ export default class Runner {
           }
         }
       }
+
 
       // Check for collisions.
       var collision =
@@ -867,6 +900,7 @@ export default class Runner {
       this.runningTime = 0
       this.playing = true
       this.crashed = false
+      this.won = false
       this.distanceRan = 0
       this.coinCount = 0
       this.setSpeed(this.config.SPEED)
@@ -969,6 +1003,41 @@ export default class Runner {
         this.invertTrigger,
       )
     }
+  }
+
+  startCalmDownSequence() {
+    this.won = true
+    this.stopSpawningObstacles = true
+
+    // Force T-Rex to land if jumping
+    if (this.tRex.status === Trex.status.JUMPING) {
+      this.tRex.endJump()
+    }
+
+    setTimeout(() => {
+      this.freezeHorizon()
+    }, 1200) 
+  }
+
+  freezeHorizon() {
+    config.freezeMovement = true
+    this.moveTrexToRight()
+  }
+
+  moveTrexToRight() {
+    const targetX = this.dimensions.WIDTH 
+
+    const move = () => {
+      if (this.tRex.xPos < targetX) {
+        this.tRex.xPos += 3 // Control speed here
+        requestAnimationFrame(move)
+      } else {
+        this.tRex.xPos = targetX
+        this.onTrexAtLake()
+      }
+    }
+
+    move()
   }
 
   // end of Runner class

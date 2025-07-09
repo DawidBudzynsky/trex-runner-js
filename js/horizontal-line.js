@@ -1,4 +1,4 @@
-import { assets } from './constants.js'
+import { assets, config } from './constants.js'
 import { IS_HIDPI, FPS } from './config.js'
 import { drawImageScaled } from './utils.js'
 
@@ -27,7 +27,20 @@ export default class HorizonLine {
     this.bumpThreshold = 0.5
 
     this.setSourceDimensions()
+
+
+    this.shouldRenderLakeP = true
+    const lakePWidth = 4136 * 0.1
+    this.lakePXPos = this.canvas.width // Start just off-screen to the right
+    this.lakePFullyVisible = false
+
     this.draw()
+  }
+
+  startLakePReveal() {
+    this.shouldRenderLakeP = true
+    this.lakePXPos = this.canvas.width // just off the right edge
+    this.lakePFullyVisible = false
   }
 
   /**
@@ -68,6 +81,16 @@ export default class HorizonLine {
       600,
       100,
     )
+
+    if (this.shouldRenderLakeP && this.lakePXPos !== null) {
+      this.canvasCtx.drawImage(
+        assets.lakeP, 
+        this.lakePXPos,
+        0,
+        4136 * 0.1,
+        1600 * 0.1
+      )
+    }
 
     // Only draw lake if it's still visible
     if (this.shouldRenderLake && this.lakeXPos !== null) {
@@ -127,10 +150,25 @@ export default class HorizonLine {
   update(deltaTime, speed) {
     var increment = Math.floor(speed * (FPS / 1000) * deltaTime)
 
-    if (this.xPos[0] <= 0) {
-      this.updateXPos(0, increment)
-    } else {
-      this.updateXPos(1, increment)
+    // Stop scrolling if lakeP is fully visible
+    const stopScroll = this.shouldRenderLakeP && this.lakePFullyVisible
+
+    if (!config.freezeMovement) {
+      if (this.xPos[0] <= 0) {
+        this.updateXPos(0, increment)
+      } else {
+        this.updateXPos(1, increment)
+      }
+    }
+
+    // Move lakeP if it's being revealed
+    if (this.shouldRenderLakeP && this.lakePXPos !== null) {
+      this.lakePXPos -= increment
+      const lakePWidth = 4136 * 0.1
+      if (this.lakePXPos <= this.canvas.width - lakePWidth) {
+        this.lakePXPos = this.canvas.width - lakePWidth
+        this.lakePFullyVisible = true
+      }
     }
 
     // Update lake position

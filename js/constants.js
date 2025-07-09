@@ -16,6 +16,7 @@ export const assets = {
   deadSharkSprite: null,
   carSprite: null,
   coinSprite: null,
+  lakeP: null,
 }
 // assets.background.src = 'assets/default_200_percent/background.png'
 // assets.horizon.src = 'assets/default_200_percent/horizon.png'
@@ -49,6 +50,8 @@ export const config = {
   SPEED_DROP_COEFFICIENT: 3,
   ARCADE_MODE_INITIAL_TOP_POSITION: 35,
   ARCADE_MODE_TOP_POSITION_PERCENT: 0.1,
+  COIN_WIN_CONDITION: 250,
+  freezeMovement: false,
 }
 
 /**

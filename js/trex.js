@@ -29,6 +29,7 @@ export default class Trex {
     this.config = Trex.config
     // Current status.
     this.status = Trex.status.WAITING
+    this.visible = false
 
     this.jumping = false
     // this.ducking = false
@@ -130,6 +131,9 @@ export default class Trex {
    * @param {number} y
    */
   draw(x, y) {
+
+    if (!this.visible) return 
+
     var sourceX = x
     var sourceY = y
     var sourceWidth =
@@ -148,21 +152,6 @@ export default class Trex {
     // Adjustments for sprite sheet position.
     sourceX += this.spritePos.x
     sourceY += this.spritePos.y
-
-    // // Ducking.
-    // if (this.ducking && this.status != Trex.status.CRASHED) {
-    //   this.canvasCtx.drawImage(
-    //     assets.imageSprite,
-    //     sourceX,
-    //     sourceY,
-    //     sourceWidth,
-    //     sourceHeight,
-    //     this.xPos,
-    //     this.yPos,
-    //     this.config.WIDTH_DUCK,
-    //     this.config.HEIGHT,
-    //   )
-    // }
 
     if (this.status == Trex.status.CRASHED) {
        this.canvasCtx.drawImage(
@@ -331,6 +320,42 @@ export default class Trex {
     return this.collisionBoxes.RUNNING
   }
   // end of Trex
+
+  startBackflipAnimation(callback) {
+    this.status = Trex.status.INTRO_JUMP
+    this.yPos = this.groundYPos + 150  // Underwater
+    // this.rotation = 0
+    this.visible = true
+
+    const totalFrames = 40
+    let currentFrame = 0
+
+    const animate = () => {
+      if (currentFrame < totalFrames) {
+        const progress = currentFrame / totalFrames
+
+        // Jump arc (parabola)
+        const jumpHeight = 110 * Math.sin(Math.PI * progress)
+        this.yPos = this.groundYPos - jumpHeight
+
+        // Rotation (360° backflip)
+        // this.rotation = 360 * progress
+
+        currentFrame++
+        requestAnimationFrame(animate)
+      } else {
+        // End animation
+        // this.rotation = 0
+        this.yPos = this.groundYPos
+        this.status = Trex.status.RUNNING
+
+        if (callback) callback()
+      }
+    }
+
+    animate()
+  }
+
 }
 
 /**
@@ -368,6 +393,7 @@ Trex.status = {
   JUMPING: 'JUMPING',
   RUNNING: 'RUNNING',
   WAITING: 'WAITING',
+  INTRO_JUMP: 'INTRO_JUMP',
 }
 
 /**

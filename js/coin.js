@@ -1,6 +1,6 @@
 import CollisionBox from './collision-box.js'
 import { FPS, IS_HIDPI, IS_MOBILE } from './config.js'
-import { assets, spriteDefinition } from './constants.js'
+import { assets, config, spriteDefinition } from './constants.js'
 import { drawHitboxes, getRandomNum } from './utils.js'
 
 const WIDTH = 400
@@ -66,7 +66,10 @@ export default class Coin {
   update(deltaTime, speed) {
     this.timer += deltaTime
 
-    this.xPos -= Math.floor(((speed * FPS) / 1000) * deltaTime)
+    if (!config.freezeMovement) {
+      this.xPos -= Math.floor(((speed * FPS) / 1000) * deltaTime)
+    }
+
     if (this.xPos + this.width < 0) this.remove = true
 
     // Animation
