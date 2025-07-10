@@ -1089,6 +1089,7 @@ export default class Runner {
 
 startCalmDownSequence() {
   this.won = true
+  this.crashed = true
   this.stopSpawningObstacles = true
   this.horizon.horizonLine.shouldRenderLakeP = true
   if (this.tRex.status === Trex.status.JUMPING) {
