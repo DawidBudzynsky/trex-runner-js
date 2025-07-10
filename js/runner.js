@@ -833,8 +833,8 @@ export default class Runner {
 
       if (
         (this.crashed || this.won) &&
-        e.type == events.TOUCHSTART 
-        // e.currentTarget == this.containerEl
+        e.type == events.TOUCHSTART &&
+        e.currentTarget == this.containerEl
       ) {
         this.restart()
       }
@@ -1095,7 +1095,6 @@ export default class Runner {
 
 startCalmDownSequence() {
   this.won = true
-  this.crashed = true
   this.stopSpawningObstacles = true
   this.horizon.horizonLine.shouldRenderLakeP = true
   if (this.tRex.status === Trex.status.JUMPING) {
