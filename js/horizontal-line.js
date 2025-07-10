@@ -91,8 +91,7 @@ export default class HorizonLine {
         1600 * 0.1
       )
     }
-
-    const offsetX = (IS_MOBILE || IS_IOS) ? -200 : 0;
+    const offsetX = this.canvas.width < 1200 ? -200 : 0;
     if (this.shouldRenderLakeP) {
       this.canvasCtx.drawImage(
         assets.lakeP, 

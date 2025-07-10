@@ -825,22 +825,22 @@ export default class Runner {
       }
 
       if (
-        this.crashed &&
+        (this.crashed || this.won) &&
         e.type == events.TOUCHSTART &&
         e.currentTarget == this.containerEl
       ) {
         this.restart()
       }
 
-       if (this.won) {
-        if (
-          (e.type === events.TOUCHSTART && e.currentTarget === this.containerEl) ||
-          (keycodes.RESTART[e.keyCode]) 
-        ) {
-          this.restart();
-          return;
-        }
-      }
+      //  if (this.won) {
+      //   if (
+      //     (e.type === events.TOUCHSTART && e.currentTarget === this.containerEl) ||
+      //     (keycodes.RESTART[e.keyCode]) 
+      //   ) {
+      //     this.restart();
+      //     return;
+      //   }
+      // }
     }
   }
 
