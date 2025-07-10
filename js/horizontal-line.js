@@ -189,9 +189,9 @@ export default class HorizonLine {
     this.xPos[0] = 0
     this.xPos[1] = HorizonLine.dimensions.WIDTH
     this.lakeXPos = -40
-    // this.lakePXPos = 750
-    // this.lakePFullyVisible = false
-    // this.shouldRenderLakeP = false
+    this.lakePXPos = 750
+    this.lakePFullyVisible = false
+    this.shouldRenderLakeP = false
     this.shouldRenderLake = true
   }
 }

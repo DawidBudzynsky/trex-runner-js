@@ -992,7 +992,14 @@ export default class Runner {
       this.runningTime = 0
       this.playing = true
       this.crashed = false
+
       this.won = false
+      this.stopSpawningObstacles = false
+      config.freezeMovement = false
+      this.tRex.visible = true
+      this.tRex.xPos = this.canvas.width / 15
+      this.disableControls = false
+
       this.distanceRan = 0
       this.coinCount = 0
       this.setSpeed(this.config.SPEED)
@@ -1005,8 +1012,7 @@ export default class Runner {
       this.tRex.reset()
       this.playSound(this.soundFx.BUTTON_PRESS)
       this.invert(true)
-      this.update() // ← Start main loop after animation
-      // this.update()
+      this.update()
     }
   }
 

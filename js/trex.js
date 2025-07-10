@@ -326,6 +326,8 @@ draw(x, y) {
     this.midair = false
     this.speedDrop = false
     this.jumpCount = 0
+
+    this.rotation = 0
   }
 
   /**

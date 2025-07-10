@@ -254,6 +254,7 @@ addCoin(currentSpeed) {
    */
   reset() {
     this.obstacles = []
+    this.coins = []
     this.horizonLine.reset()
     this.nightMode.reset()
   }
