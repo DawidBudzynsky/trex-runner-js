@@ -332,23 +332,8 @@ export default class Runner {
       this.dimensions.WIDTH,
       this.dimensions.HEIGHT,
     )
-    console.log(this.coinCounter)
 
-    // Draw t-rex
     this.tRex = new Trex(this.canvas, spriteDefFolder.HDPI.SHARK)
-    // this.tRex.introJumpAnimation(
-    //   () => {
-    //     // Per frame: clear + redraw entire frame
-    //     this.canvasCtx.clearRect(0, 0, this.canvas.width, this.canvas.height)
-    //     this.horizon.update(0, 0, true)  // <-- redraw background
-    //     // this.horizon.draw()
-    //     this.tRex.draw(0, 0)
-    //   },
-    //   () => {
-    //     // Optional: start game loop or show UI
-    //     console.log("Intro jump complete")
-    //   }
-    // )
 
     this.outerContainerEl.appendChild(this.containerEl)
 
@@ -529,7 +514,6 @@ export default class Runner {
    */
   update() {
     this.updatePending = false
-    console.log('Active animation frames:', this.rafCount)
 
     var now = getTimeStamp()
     var deltaTime = now - (this.time || now)
@@ -586,7 +570,6 @@ export default class Runner {
             coin.collected = true
             coin.remove = true
             this.coinCount = (this.coinCount || 0) + 1
-            console.log(this.coinCount)
           }
         }
       }
@@ -608,7 +591,6 @@ export default class Runner {
       }
 
       if (this.coinCount >= 2 && !this.won) {
-        console.log("you won!")
         this.startCalmDownSequence()
       }
 
@@ -666,6 +648,7 @@ export default class Runner {
 
     // moveTrexToRight
     if (this.animations.moveTrexToRight) {
+      this.disableControls = true
       const targetX = this.dimensions.WIDTH - 300
       if (this.tRex.xPos < targetX) {
         this.tRex.xPos += 2
@@ -794,7 +777,7 @@ export default class Runner {
    * @param {Event} e
    */
   onKeyDown(e) {
-    if (this.disableControls) return
+    if (this.disableControls) return;
 
     if (
       this.playing &&
@@ -848,18 +831,17 @@ export default class Runner {
       ) {
         this.restart()
       }
-    }
 
-    // if (this.playing && !this.crashed && keycodes.DUCK[e.keyCode]) {
-    //   e.preventDefault()
-    //   if (this.tRex.jumping) {
-    //     // Speed drop, activated only when jump key is not pressed.
-    //     this.tRex.setSpeedDrop()
-    //   } else if (!this.tRex.jumping && !this.tRex.ducking) {
-    //     // Duck.
-    //     this.tRex.setDuck(true)
-    //   }
-    // }
+       if (this.won) {
+        if (
+          (e.type === events.TOUCHSTART && e.currentTarget === this.containerEl) ||
+          (keycodes.RESTART[e.keyCode]) 
+        ) {
+          this.restart();
+          return;
+        }
+      }
+    }
   }
 
   /**
@@ -997,7 +979,7 @@ export default class Runner {
       this.stopSpawningObstacles = false
       config.freezeMovement = false
       this.tRex.visible = true
-      this.tRex.xPos = this.canvas.width / 15
+      this.tRex.xPos = 0
       this.disableControls = false
 
       this.distanceRan = 0

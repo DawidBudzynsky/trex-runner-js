@@ -1,5 +1,5 @@
 import { assets, config } from './constants.js'
-import { IS_HIDPI, FPS } from './config.js'
+import { IS_HIDPI, FPS, IS_MOBILE, IS_IOS } from './config.js'
 import { drawImageScaled } from './utils.js'
 
 export default class HorizonLine {
@@ -30,7 +30,8 @@ export default class HorizonLine {
 
 
     this.shouldRenderLakeP = false
-    this.lakePXPos = 750
+
+    this.lakePXPos = this.canvas.width - 300
     this.lakePFullyVisible = false
 
     this.draw()
@@ -91,13 +92,14 @@ export default class HorizonLine {
       )
     }
 
+    const offsetX = (IS_MOBILE || IS_IOS) ? -200 : 0;
     if (this.shouldRenderLakeP) {
       this.canvasCtx.drawImage(
         assets.lakeP, 
-        this.lakePXPos,
+        this.lakePXPos + offsetX,
         0,
         4136 * 0.1,
-        1600 * 0.1
+        1600 * 0.1 
       )
     }
 
@@ -158,11 +160,12 @@ export default class HorizonLine {
 
     // RIGHT lake (appears after win)
     if (this.shouldRenderLakeP) {
-      const targetX = 300
+      const targetX = this.dimensions.WIDTH / 2.5
 
       if (this.lakePXPos > targetX) {
         this.lakePXPos -= increment
-        console.log(this.lakePXPos)
+        console.log(this.canvas.width)
+        console.log(this.lakePXPos, targetX)
         if (this.lakePXPos <= targetX) {
           this.lakePXPos = targetX
           this.lakePFullyVisible = true
@@ -189,7 +192,7 @@ export default class HorizonLine {
     this.xPos[0] = 0
     this.xPos[1] = HorizonLine.dimensions.WIDTH
     this.lakeXPos = -40
-    this.lakePXPos = 750
+    this.lakePXPos = this.dimensions.WIDTH + 100
     this.lakePFullyVisible = false
     this.shouldRenderLakeP = false
     this.shouldRenderLake = true
