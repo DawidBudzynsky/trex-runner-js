@@ -81,6 +81,15 @@ export default class HorizonLine {
       100,
     )
 
+    // Draw horizon.png on top of the background, just above the grass
+    drawImageScaled(
+      this.canvasCtx,
+      assets.horizon,
+      0, 100,
+      600, 100
+    )
+
+
     // Only draw lake if it's still visible
     if (this.shouldRenderLake && this.lakeXPos !== null) {
       this.canvasCtx.drawImage(

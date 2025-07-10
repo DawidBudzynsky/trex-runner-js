@@ -974,9 +974,9 @@ export default class Runner {
       this.playCount++
       this.runningTime = 0
       this.playing = true
+      this.won = false
       this.crashed = false
 
-      this.won = false
       this.stopSpawningObstacles = false
       config.freezeMovement = false
       this.tRex.visible = true
