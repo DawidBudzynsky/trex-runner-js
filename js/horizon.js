@@ -94,14 +94,14 @@ addCoin(currentSpeed) {
     //   backgroundHeight
     // )
 
-    // Draw horizon.png on top of the background, just above the grass
-    drawImageScaled(
-      this.canvasCtx,
-      assets.horizon,
-      0, horizonY,
-      this.dimensions.WIDTH,
-      this.config.HORIZON_HEIGHT + offSet
-    )
+    // // Draw horizon.png on top of the background, just above the grass
+    // drawImageScaled(
+    //   this.canvasCtx,
+    //   assets.horizon,
+    //   0, horizonY,
+    //   this.dimensions.WIDTH,
+    //   this.config.HORIZON_HEIGHT + offSet
+    // )
 
     this.runningTime += deltaTime
 

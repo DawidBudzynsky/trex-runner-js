@@ -379,6 +379,7 @@ Trex.status = {
   WAITING: 'WAITING',
   INTRO_JUMP: 'INTRO_JUMP',
   WIN_JUMP: "WIN_JUMP",
+  IN_LAEK: "IN_LAKE",
 }
 
 /**

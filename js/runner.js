@@ -600,7 +600,7 @@ export default class Runner {
         this.gameOver()
       }
 
-      if (this.coinCount >= 2 && !this.won) {
+      if (this.coinCount >= config.COIN_WIN_CONDITION && !this.won) {
         this.startCalmDownSequence()
       }
 
