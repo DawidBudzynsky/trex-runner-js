@@ -235,6 +235,16 @@ export default class Runner {
       // If the images are not yet loaded, add a listener.
       assets.imageSprite.addEventListener(events.LOAD, this.init.bind(this))
       assets.additionalImageSprite.addEventListener(events.LOAD, this.init.bind(this))
+      assets.lakeImageSprite.addEventListener(events.LOAD, this.init.bind(this))
+      assets.lakeP.addEventListener(events.LOAD, this.init.bind(this))
+      assets.deadSharkSprite.addEventListener(events.LOAD, this.init.bind(this))
+      assets.birdSprite.addEventListener(events.LOAD, this.init.bind(this))
+      assets.coinSprite.addEventListener(events.LOAD, this.init.bind(this))
+      assets.sharkSprite.addEventListener(events.LOAD, this.init.bind(this))
+      assets.background.addEventListener(events.LOAD, this.init.bind(this))
+      assets.grass.addEventListener(events.LOAD, this.init.bind(this))
+      assets.horizon.addEventListener(events.LOAD, this.init.bind(this))
+      assets.carSprite.addEventListener(events.LOAD, this.init.bind(this))
     }
   }
 
@@ -813,9 +823,6 @@ export default class Runner {
           this.loadSounds()
           this.playing = true
           this.update()
-          // if (window.errorPageController) {
-          //   errorPageController.trackEasterEgg()
-          // }
         }
         //  Play sound effect and jump on starting the game for the first time.
         if (!this.tRex.jumping) {
@@ -824,11 +831,10 @@ export default class Runner {
         }
       }
 
-      console.log(this.won)
       if (
         (this.crashed || this.won) &&
-        e.type == events.TOUCHSTART &&
-        e.currentTarget == this.containerEl
+        e.type == events.TOUCHSTART 
+        // e.currentTarget == this.containerEl
       ) {
         this.restart()
       }
