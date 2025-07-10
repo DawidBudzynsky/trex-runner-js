@@ -824,6 +824,7 @@ export default class Runner {
         }
       }
 
+      console.log(this.won)
       if (
         (this.crashed || this.won) &&
         e.type == events.TOUCHSTART &&
@@ -857,7 +858,7 @@ export default class Runner {
 
     if (this.isRunning() && isjumpKey) {
       this.tRex.endJump()
-    } else if (this.crashed) {
+    } else if (this.crashed || this.won) {
       // Check that enough time has elapsed before allowing jump key to restart.
       var deltaTime = getTimeStamp() - this.time
 

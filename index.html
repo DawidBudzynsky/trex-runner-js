@@ -14,13 +14,21 @@
     />
     <script type="module" src="./index.js"></script>
     <script>
+      function hideMessageBox() {
+        const box = document.getElementById('messageBox')
+        if (box) box.style.visibility = 'hidden'
+      }
+
       document.onkeydown = function (evt) {
         evt = evt || window.event
         if (evt.keyCode == 32) {
-          var box = document.getElementById('messageBox')
-          box.style.visibility = 'hidden'
+          hideMessageBox()
         }
       }
+
+      document.addEventListener('touchstart', function () {
+        hideMessageBox()
+      })
     </script>
   </head>
 
@@ -30,7 +38,6 @@
       </div>
     <div id="messageBox" class="sendmessage">
       <h1 style="text-align: center; font-family: 'Open Sans', sans-serif">
-        Press Space to start
       </h1>
       <div class="niokbutton" onclick="okbuttonsend()"></div>
     </div>

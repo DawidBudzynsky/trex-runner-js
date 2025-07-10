@@ -163,8 +163,6 @@ export default class HorizonLine {
 
       if (this.lakePXPos > targetX) {
         this.lakePXPos -= increment
-        console.log(this.canvas.width)
-        console.log(this.lakePXPos, targetX)
         if (this.lakePXPos <= targetX) {
           this.lakePXPos = targetX
           this.lakePFullyVisible = true
