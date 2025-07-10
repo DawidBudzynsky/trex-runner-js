@@ -130,58 +130,76 @@ export default class Trex {
    * @param {number} x
    * @param {number} y
    */
-  draw(x, y) {
+draw(x, y) {
+  if (!this.visible) return
 
-    if (!this.visible) return 
+  let sourceX = x
+  let sourceY = y
+  let sourceWidth =
+    this.ducking && this.status !== Trex.status.CRASHED
+      ? this.config.WIDTH_DUCK
+      : this.config.WIDTH
+  let sourceHeight = this.config.HEIGHT
 
-    var sourceX = x
-    var sourceY = y
-    var sourceWidth =
-      this.ducking && this.status != Trex.status.CRASHED
-        ? this.config.WIDTH_DUCK
-        : this.config.WIDTH
-    var sourceHeight = this.config.HEIGHT
-
-    if (IS_HIDPI) {
-      sourceX *= 2
-      sourceY *= 2
-      sourceWidth *= 2
-      sourceHeight *= 2
-    }
-
-    // Adjustments for sprite sheet position.
-    sourceX += this.spritePos.x
-    sourceY += this.spritePos.y
-
-    if (this.status == Trex.status.CRASHED) {
-       this.canvasCtx.drawImage(
-        assets.deadSharkSprite,
-        this.currentAnimFrames[this.currentFrame] + this.spritePos.x, // <-- frame offset
-        this.spritePos.y,
-        sourceWidth,
-        sourceHeight,
-        this.xPos,
-        this.yPos,
-        this.config.WIDTH * SCALE,
-        this.config.HEIGHT * SCALE,
-      )
-    } else {
-      // Crashed whilst ducking. Trex is standing up so needs adjustment.
-      if (this.ducking && this.status == Trex.status.CRASHED) {
-        this.xPos++
-      }
-
-      // Standing / running
-      this.canvasCtx.drawImage(
-        assets.sharkSprite,
-        sourceX, sourceY, sourceWidth, sourceHeight,
-        this.xPos, this.yPos, this.config.WIDTH * SCALE,
-        this.config.HEIGHT * SCALE,
-      )
-    }
-
-    drawHitboxes(this.canvasCtx, this.collisionBoxes.RUNNING, this.xPos, this.yPos)
+  if (IS_HIDPI) {
+    sourceX *= 2
+    sourceY *= 2
+    sourceWidth *= 2
+    sourceHeight *= 2
   }
+
+  sourceX += this.spritePos.x
+  sourceY += this.spritePos.y
+
+  const ctx = this.canvasCtx
+  const destWidth = this.config.WIDTH * SCALE
+  const destHeight = this.config.HEIGHT * SCALE
+
+  // Rotation setup
+  const hasRotation = this.rotation && this.rotation !== 0
+  if (hasRotation) {
+    const centerX = this.xPos + destWidth / 2
+    const centerY = this.yPos + destHeight / 2
+
+    ctx.save()
+    ctx.translate(centerX, centerY)
+    ctx.rotate((this.rotation * Math.PI) / 180)
+    ctx.translate(-centerX, -centerY)
+  }
+
+  if (this.status === Trex.status.CRASHED) {
+    ctx.drawImage(
+      assets.deadSharkSprite,
+      this.currentAnimFrames[this.currentFrame] + this.spritePos.x,
+      this.spritePos.y,
+      sourceWidth,
+      sourceHeight,
+      this.xPos,
+      this.yPos,
+      destWidth,
+      destHeight
+    )
+  } else {
+    ctx.drawImage(
+      assets.sharkSprite,
+      sourceX,
+      sourceY,
+      sourceWidth,
+      sourceHeight,
+      this.xPos,
+      this.yPos,
+      destWidth,
+      destHeight
+    )
+  }
+
+  if (hasRotation) {
+    ctx.restore()
+  }
+
+  drawHitboxes(ctx, this.collisionBoxes.RUNNING, this.xPos, this.yPos)
+}
+
 
   /**
    * Sets a random time for the blink to happen.
@@ -320,42 +338,6 @@ export default class Trex {
     return this.collisionBoxes.RUNNING
   }
   // end of Trex
-
-  startBackflipAnimation(callback) {
-    this.status = Trex.status.INTRO_JUMP
-    this.yPos = this.groundYPos + 150  // Underwater
-    // this.rotation = 0
-    this.visible = true
-
-    const totalFrames = 40
-    let currentFrame = 0
-
-    const animate = () => {
-      if (currentFrame < totalFrames) {
-        const progress = currentFrame / totalFrames
-
-        // Jump arc (parabola)
-        const jumpHeight = 110 * Math.sin(Math.PI * progress)
-        this.yPos = this.groundYPos - jumpHeight
-
-        // Rotation (360° backflip)
-        // this.rotation = 360 * progress
-
-        currentFrame++
-        requestAnimationFrame(animate)
-      } else {
-        // End animation
-        // this.rotation = 0
-        this.yPos = this.groundYPos
-        this.status = Trex.status.RUNNING
-
-        if (callback) callback()
-      }
-    }
-
-    animate()
-  }
-
 }
 
 /**
@@ -394,6 +376,7 @@ Trex.status = {
   RUNNING: 'RUNNING',
   WAITING: 'WAITING',
   INTRO_JUMP: 'INTRO_JUMP',
+  WIN_JUMP: "WIN_JUMP",
 }
 
 /**

@@ -42,6 +42,13 @@ export default class Runner {
     }
     Runner._instance = this
 
+    this.animations = {
+      waitForLakeReveal: false,
+      moveTrexToRight: false,
+      trexEndJump: null, 
+      trexWinJump: null, 
+    }
+
     this.outerContainerEl = document.querySelector(outerContainerId)
     this.furiaworldBanner = document.getElementById('furiaworld-banner')
     this.containerEl = null
@@ -53,9 +60,13 @@ export default class Runner {
     this.dimensions = defaultDimensions
 
     this.canvas = null
+
+    this.gameWonPanel = null
+
     this.canvasCtx = null
 
     this.tRex = null
+    this.disableControls = false
 
     this.distanceMeter = null
     this.distanceRan = 0
@@ -446,11 +457,15 @@ export default class Runner {
       sheet.innerHTML = keyframes
       document.head.appendChild(sheet)
 
+
+      this.disableControls = true,
+      this.startTrexEndJumpAnimation(() => {
+        console.log("End animation finished")
+      })
+
       this.containerEl.addEventListener(
         events.ANIM_END,
-        this.tRex.startBackflipAnimation(() => {
-          this.startGame().bind(this)
-        })
+        this.startGame.bind(this)
       )
 
       this.containerEl.style.webkitAnimation = 'intro .4s ease-out 1 both'
@@ -478,6 +493,7 @@ export default class Runner {
    * Update the game status to started.
    */
   startGame() {
+    this.disableControls = false
     this.setArcadeMode()
     this.runningTime = 0
     this.playingIntro = false
@@ -513,6 +529,7 @@ export default class Runner {
    */
   update() {
     this.updatePending = false
+    console.log('Active animation frames:', this.rafCount)
 
     var now = getTimeStamp()
     var deltaTime = now - (this.time || now)
@@ -550,10 +567,6 @@ export default class Runner {
         )
       }
 
-      if (this.coinCount >= 2 && !this.won) {
-        console.log("you won!")
-        this.startCalmDownSequence()
-      }
 
       if (hasObstacles && this.horizon.obstacles.length > 0) {
         for (let i = 0; i < this.horizon.obstacles.length; i++) {
@@ -578,6 +591,7 @@ export default class Runner {
         }
       }
 
+      this.updateAnimations()
 
       // Check for collisions.
       var collision =
@@ -593,12 +607,9 @@ export default class Runner {
         this.gameOver()
       }
 
-      if (this.immortal) {
-        this.immortalTimer -= deltaTime
-        if (this.immortalTimer <= 0) {
-          this.immortal = false
-          this.immortalTimer = 0
-          }
+      if (this.coinCount >= 2 && !this.won) {
+        console.log("you won!")
+        this.startCalmDownSequence()
       }
 
       var playAchievementSound = this.distanceMeter.update(
@@ -640,6 +651,85 @@ export default class Runner {
     ) {
       this.tRex.update(deltaTime)
       this.scheduleNextUpdate()
+    }
+  }
+
+  updateAnimations() {
+    if (this.animations.waitForLakeReveal) {
+      if (!this.horizon.horizonLine.lakePFullyVisible) {
+        // still waiting, do nothing
+      } else {
+        this.animations.waitForLakeReveal = false
+        this.freezeHorizon()
+      }
+    }
+
+    // moveTrexToRight
+    if (this.animations.moveTrexToRight) {
+      const targetX = this.dimensions.WIDTH - 300
+      if (this.tRex.xPos < targetX) {
+        this.tRex.xPos += 3
+      } else {
+        this.tRex.xPos = targetX
+        this.animations.moveTrexToRight = false
+        this.onTrexAtLake()
+      }
+    }
+
+    // trexEndJump animation
+    if (this.animations.trexEndJump) {
+      const anim = this.animations.trexEndJump
+      if (anim.currentFrame <= anim.totalFrames) {
+        const progress = anim.currentFrame / anim.totalFrames
+        this.tRex.xPos = anim.startX + (anim.endX - anim.startX) * progress
+        const jumpHeight = 150 * Math.sin(Math.PI * progress)
+        this.tRex.yPos = anim.startY - jumpHeight
+
+        if (progress < 0.3) {
+          this.tRex.rotation = anim.position
+        } else {
+          const rotationProgress = (progress - 0.3) * 2
+          this.tRex.rotation = anim.position * (1 - rotationProgress)
+        }
+
+        anim.currentFrame++
+      } else {
+        this.tRex.yPos = anim.groundY
+        this.tRex.rotation = 0
+        this.tRex.status = Trex.status.RUNNING
+        this.disableControls = false
+        if (anim.callback) anim.callback()
+        this.animations.trexEndJump = null
+      }
+    }
+
+    // trexWinJump animation
+    if (this.animations.trexWinJump) {
+      const anim = this.animations.trexWinJump
+      const progress = anim.currentFrame / anim.totalFrames
+      const arcProgress = Math.sin(Math.PI * progress)
+
+      this.tRex.xPos = anim.startX + (anim.endX - anim.startX) * progress
+      this.tRex.yPos = anim.startY - anim.peakHeight * arcProgress
+
+      if (progress < 0.5) {
+        this.tRex.rotation = 0
+      } else {
+        const rotationProgress = (progress - 0.5) * 2
+        this.tRex.rotation = 90 * rotationProgress
+      }
+
+      anim.currentFrame++
+
+      if (anim.currentFrame > anim.totalFrames) {
+        this.tRex.rotation = 90
+        this.tRex.status = Trex.status.IN_LAKE
+        this.tRex.yPos = anim.startY
+        this.tRex.visible = false
+
+        this.animations.trexWinJump = null
+        this.gameOver()
+      }
     }
   }
 
@@ -704,7 +794,8 @@ export default class Runner {
    * @param {Event} e
    */
   onKeyDown(e) {
-    // Only allow secret code when game is playing and not crashed
+    if (this.disableControls) return
+
     if (
       this.playing &&
       !this.crashed &&
@@ -822,6 +913,7 @@ export default class Runner {
    */
   scheduleNextUpdate() {
     if (!this.updatePending) {
+      this.rafCount++
       this.updatePending = true
       this.raqId = requestAnimationFrame(this.update.bind(this))
     }
@@ -913,7 +1005,8 @@ export default class Runner {
       this.tRex.reset()
       this.playSound(this.soundFx.BUTTON_PRESS)
       this.invert(true)
-      this.update()
+      this.update() // ← Start main loop after animation
+      // this.update()
     }
   }
 
@@ -1006,48 +1099,62 @@ export default class Runner {
   }
 
   startCalmDownSequence() {
-    this.won = true
-    this.stopSpawningObstacles = true
-    this.horizon.horizonLine.shouldRenderLakeP = true
-
-    // Force T-Rex to land if jumping
-    if (this.tRex.status === Trex.status.JUMPING) {
-      this.tRex.endJump()
-    }
-
-    // Continuously check if lakeP is fully shown
-    const waitForLakeToReveal = () => {
-      if (!this.horizon.horizonLine.lakePFullyVisible) {
-        requestAnimationFrame(waitForLakeToReveal)
-      } else {
-        this.freezeHorizon() // Now we can freeze movement
-      }
-    }
-    waitForLakeToReveal()
+  this.won = true
+  this.stopSpawningObstacles = true
+  this.horizon.horizonLine.shouldRenderLakeP = true
+  if (this.tRex.status === Trex.status.JUMPING) {
+    this.tRex.endJump()
   }
+  this.animations.waitForLakeReveal = true
+}
 
-  freezeHorizon() {
-    config.freezeMovement = true
-    this.moveTrexToRight()
+freezeHorizon() {
+  config.freezeMovement = true
+  this.disableControls = true
+  this.animations.moveTrexToRight = true
+}
+
+startTrexEndJumpAnimation(callback) {
+  this.disableControls = true
+  this.tRex.status = Trex.status.INTRO_JUMP
+  this.tRex.visible = true
+
+  const groundY = this.tRex.groundYPos
+  const startY = groundY + 30
+  const startX = this.tRex.xPos
+  const endX = this.dimensions.WIDTH / 15
+  const totalFrames = 60
+  const position = -45
+
+  this.animations.trexEndJump = {
+    callback,
+    currentFrame: 0,
+    totalFrames,
+    startX,
+    endX,
+    startY,
+    groundY,
+    position,
   }
+}
 
-  moveTrexToRight() {
-    const targetX = this.dimensions.WIDTH 
-
-    const move = () => {
-      if (this.tRex.xPos < targetX) {
-        this.tRex.xPos += 3 // Control speed here
-        requestAnimationFrame(move)
-      } else {
-        this.tRex.xPos = targetX
-        this.onTrexAtLake()
-      }
-    }
-
-    move()
+onTrexAtLake() {
+  this.tRex.status = Trex.status.WIN_JUMP
+  this.tRex.visible = true
+  const startX = this.tRex.xPos
+  const startY = this.tRex.yPos
+  const endX = startX + 160
+  const peakHeight = 110
+  const totalFrames = 40
+  this.animations.trexWinJump = {
+    currentFrame: 0,
+    totalFrames,
+    startX,
+    startY,
+    endX,
+    peakHeight,
   }
-
-  // end of Runner class
+}
 }
 
 window['Runner'] = Runner
