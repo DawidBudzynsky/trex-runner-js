@@ -1,4 +1,4 @@
-import { assets } from './constants.js'
+import { assets, config } from './constants.js'
 import { IS_HIDPI } from './config.js'
 
 /**
@@ -68,30 +68,32 @@ export default class GameOverPanel {
     textSourceY += this.textImgPos.y
 
     // Game over text from sprite.
-    this.canvasCtx.drawImage(
-      assets.imageSprite,
-      textSourceX,
-      textSourceY,
-      textSourceWidth,
-      textSourceHeight,
-      textTargetX,
-      textTargetY,
-      textTargetWidth,
-      textTargetHeight,
-    )
+    if(!config.freezeMovement) {
+      this.canvasCtx.drawImage(
+        assets.imageSprite,
+        textSourceX,
+        textSourceY,
+        textSourceWidth,
+        textSourceHeight,
+        textTargetX,
+        textTargetY,
+        textTargetWidth,
+        textTargetHeight,
+      )
 
-    // Restart button.
-    this.canvasCtx.drawImage(
-      assets.imageSprite,
-      this.restartImgPos.x,
-      this.restartImgPos.y,
-      restartSourceWidth,
-      restartSourceHeight,
-      restartTargetX,
-      restartTargetY,
-      dimensions.RESTART_WIDTH,
-      dimensions.RESTART_HEIGHT,
-    )
+      // Restart button.
+      this.canvasCtx.drawImage(
+        assets.imageSprite,
+        this.restartImgPos.x,
+        this.restartImgPos.y,
+        restartSourceWidth,
+        restartSourceHeight,
+        restartTargetX,
+        restartTargetY,
+        dimensions.RESTART_WIDTH,
+        dimensions.RESTART_HEIGHT,
+      )
+    }
   }
 }
 
