@@ -668,7 +668,7 @@ export default class Runner {
     if (this.animations.moveTrexToRight) {
       const targetX = this.dimensions.WIDTH - 300
       if (this.tRex.xPos < targetX) {
-        this.tRex.xPos += 3
+        this.tRex.xPos += 2
       } else {
         this.tRex.xPos = targetX
         this.animations.moveTrexToRight = false
@@ -1098,7 +1098,7 @@ export default class Runner {
     }
   }
 
-  startCalmDownSequence() {
+startCalmDownSequence() {
   this.won = true
   this.stopSpawningObstacles = true
   this.horizon.horizonLine.shouldRenderLakeP = true
@@ -1123,7 +1123,7 @@ startTrexEndJumpAnimation(callback) {
   const startY = groundY + 30
   const startX = this.tRex.xPos
   const endX = this.dimensions.WIDTH / 15
-  const totalFrames = 60
+  const totalFrames = 90
   const position = -45
 
   this.animations.trexEndJump = {
@@ -1145,7 +1145,7 @@ onTrexAtLake() {
   const startY = this.tRex.yPos
   const endX = startX + 160
   const peakHeight = 110
-  const totalFrames = 40
+  const totalFrames = 90
   this.animations.trexWinJump = {
     currentFrame: 0,
     totalFrames,
