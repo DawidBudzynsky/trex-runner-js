@@ -6,7 +6,14 @@ import Runner from './js/runner.js'
  */
 
 function onDocumentLoad() {
-  new Runner('.interstitial-wrapper')
+  if (window.__runnerInitialized) return;
+  window.__runnerInitialized = true;
+
+  try {
+    new Runner('.interstitial-wrapper');
+  } catch (err) {
+    console.warn('Runner init error:', err);
+  }
 }
 
 document.addEventListener('DOMContentLoaded', onDocumentLoad)

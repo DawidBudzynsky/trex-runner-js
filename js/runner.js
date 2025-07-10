@@ -112,6 +112,8 @@ export default class Runner {
     this.images = {}
     this.imagesLoaded = 0
 
+    this.initialized = false // Whether the game has been initialized.
+
     if (this.isDisabled()) {
       this.setupDisabledRunner()
     } else {
@@ -192,61 +194,57 @@ export default class Runner {
    * Cache the appropriate image sprite from the page and get the sprite sheet
    * definition.
    */
-  loadImages() {
-    if (IS_HIDPI) {
-      assets.imageSprite = document.getElementById('offline-resources-2x')
-      assets.additionalImageSprite = document.getElementById('texture')
+loadImages() {
+  const assetIds = [
+    'offline-resources-2x',
+    'texture',
+    'lake-texture',
+    'lake-p-texture',
+    'grass',
+    'background',
+    'horizon',
+    'deadSharkSprite',
+    'birdSprite',
+    'coinSprite',
+    'sharkSprite',
+    'carSprite',
+  ];
 
-      assets.lakeImageSprite = document.getElementById('lake-texture')
-      assets.lakeP = document.getElementById('lake-p-texture')
-      assets.grass = document.getElementById('grass')
-      assets.background = document.getElementById('background')
-      assets.horizon = document.getElementById('horizon')
+  const getEl = id => document.getElementById(id);
 
-      // sprites for each
-      assets.deadSharkSprite = document.getElementById('deadSharkSprite')
-      assets.birdSprite = document.getElementById('birdSprite')
-      assets.coinSprite = document.getElementById('coinSprite')
-      assets.sharkSprite = document.getElementById('sharkSprite')
-      assets.carSprite = document.getElementById('carSprite')
+  // Cache the loaded elements
+  assets.imageSprite = getEl('offline-resources-2x');
+  assets.additionalImageSprite = getEl('texture');
+  assets.lakeImageSprite = getEl('lake-texture');
+  assets.lakeP = getEl('lake-p-texture');
+  assets.grass = getEl('grass');
+  assets.background = getEl('background');
+  assets.horizon = getEl('horizon');
+  assets.deadSharkSprite = getEl('deadSharkSprite');
+  assets.birdSprite = getEl('birdSprite');
+  assets.coinSprite = getEl('coinSprite');
+  assets.sharkSprite = getEl('sharkSprite');
+  assets.carSprite = getEl('carSprite');
 
-      this.spriteDef = spriteDefinition.HDPI
-    } else {
-      assets.imageSprite = document.getElementById('offline-resources-1x')
-      this.spriteDef = spriteDefinition.LDPI
-    }
+  this.spriteDef = IS_HIDPI ? spriteDefinition.HDPI : spriteDefinition.LDPI;
 
-    if (assets.imageSprite.complete &&
-        assets.additionalImageSprite.complete &&
-        assets.lakeImageSprite.complete &&
-        assets.lakeP.complete &&
-        assets.deadSharkSprite.complete &&
-        assets.birdSprite.complete &&
-        assets.coinSprite.complete &&
-        assets.sharkSprite.complete &&
-        assets.background.complete &&
-        assets.grass.complete &&
-        assets.horizon.complete &&
-        assets.carSprite.complete
-      ) {
+  const imageElements = assetIds.map(getEl);
 
-      this.init()
-    } else {
-      // If the images are not yet loaded, add a listener.
-      assets.imageSprite.addEventListener(events.LOAD, this.init.bind(this))
-      assets.additionalImageSprite.addEventListener(events.LOAD, this.init.bind(this))
-      assets.lakeImageSprite.addEventListener(events.LOAD, this.init.bind(this))
-      assets.lakeP.addEventListener(events.LOAD, this.init.bind(this))
-      assets.deadSharkSprite.addEventListener(events.LOAD, this.init.bind(this))
-      assets.birdSprite.addEventListener(events.LOAD, this.init.bind(this))
-      assets.coinSprite.addEventListener(events.LOAD, this.init.bind(this))
-      assets.sharkSprite.addEventListener(events.LOAD, this.init.bind(this))
-      assets.background.addEventListener(events.LOAD, this.init.bind(this))
-      assets.grass.addEventListener(events.LOAD, this.init.bind(this))
-      assets.horizon.addEventListener(events.LOAD, this.init.bind(this))
-      assets.carSprite.addEventListener(events.LOAD, this.init.bind(this))
-    }
-  }
+  const imagePromises = imageElements.map(img =>
+    img.complete && img.naturalWidth > 0
+      ? Promise.resolve()
+      : new Promise(resolve => img.addEventListener('load', resolve))
+  );
+
+  Promise.all(imagePromises)
+    .then(() => {
+      this.init();
+    })
+    .catch(err => {
+      console.error('Failed to load some images:', err);
+    });
+}
+
 
   /**
    * Load and decode base 64 encoded sounds.
@@ -297,6 +295,9 @@ export default class Runner {
    * Game initialiser.
    */
   init() {
+    if (this.initialized) return; // prevent double-initialization
+    this.initialized = true;
+
     // Hide the static icon.
     document.querySelector('.' + classes.ICON).style.visibility = 'hidden'
 
